@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Modal, TextInput } from 'react-native'
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Modal, KeyboardAvoidingView, Platform, TextInput, KeyboardAvoidingViewComponent } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useState } from 'react'
 import { useAppStore } from '../../store/useAppStore'
@@ -121,6 +121,7 @@ export default function AgendaScreen() {
       </TouchableOpacity>
 
       <Modal visible={modalVisivel} transparent animationType="slide" onRequestClose={() => setModalVisivel(false)}>
+        <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <View style={styles.modalFundo}>
           <View style={styles.modalContainer}>
             <Text style={styles.modalTitulo}>Novo evento</Text>
@@ -139,6 +140,7 @@ export default function AgendaScreen() {
             </View>
           </View>
         </View>
+        </KeyboardAvoidingView>
       </Modal>
     </SafeAreaView>
   )

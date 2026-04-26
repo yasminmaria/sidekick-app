@@ -3,9 +3,9 @@ import { Text } from 'react-native'
 import { colors } from '../theme'
 import HomeScreen from '../screens/Home/HomeScreen'
 import AgendaScreen from '../screens/Agenda/AgendaScreen'
-import ObjetivosScreen from '../screens/Objetivos/ObjetivosScreen'
 import CuidadosScreen from '../screens/Cuidados/CuidadosScreen'
 import PerfilScreen from '../screens/Perfil/PerfilScreen'
+import ObjetivosNavigator from './ObjetivosNavigator'
 
 const Tab = createBottomTabNavigator()
 
@@ -48,7 +48,7 @@ export default function TabNavigator() {
     >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Agenda" component={AgendaScreen} />
-      <Tab.Screen name="Objetivos" component={ObjetivosScreen} />
+      <Tab.Screen name="Objetivos" component={ObjetivosNavigator} />
       <Tab.Screen name="Cuidados" component={CuidadosScreen} />
       <Tab.Screen name="Perfil" component={PerfilScreen} />
     </Tab.Navigator>

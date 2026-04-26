@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Modal, TextInput, Switch, Alert } from 'react-native'
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Modal, KeyboardAvoidingView, Platform, TextInput, Switch, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useState } from 'react'
 import { useAppStore } from '../../store/useAppStore'
@@ -287,10 +287,11 @@ export default function CuidadosScreen() {
       </Modal>
 
       <Modal visible={modalMedicamento} transparent animationType="slide" onRequestClose={() => setModalMedicamento(false)}>
-        <View style={styles.modalFundo}>
-          <ScrollView contentContainerStyle={styles.modalScroll}>
-            <View style={styles.modalContainer}>
-              <Text style={styles.modalTitulo}>{medEditando ? 'Editar medicamento' : 'Novo medicamento'}</Text>
+        <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+          <View style={styles.modalFundo}>
+            <ScrollView contentContainerStyle={styles.modalScroll}>
+              <View style={styles.modalContainer}>
+                <Text style={styles.modalTitulo}>{medEditando ? 'Editar medicamento' : 'Novo medicamento'}</Text>
 
               <Text style={styles.inputLabel}>Nome</Text>
               <TextInput style={styles.input} placeholder="Ex: Ritalina, Venvanse..." placeholderTextColor={colors.textMuted} value={novoMed.nome} onChangeText={t => setNovoMed({ ...novoMed, nome: t })} autoFocus />
@@ -399,6 +400,7 @@ export default function CuidadosScreen() {
             </View>
           </ScrollView>
         </View>
+      </KeyboardAvoidingView>
       </Modal>
     </SafeAreaView>
   )

@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Modal, TextInput, Alert } from 'react-native'
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Modal, KeyboardAvoidingView, Platform, TextInput, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useState } from 'react'
 import { useAppStore } from '../../store/useAppStore'
@@ -14,7 +14,7 @@ const PRAZOS = [
 const COR_PRAZO = { curto: '#7F77DD', medio: '#1D9E75', longo: '#EF9F27' }
 const LABEL_PRAZO = { curto: 'Curto prazo', medio: 'Médio prazo', longo: 'Longo prazo' }
 
-export default function ObjetivosScreen() {
+export default function ObjetivosScreen({ navigation }) {
   const { objetivos, adicionarObjetivo, editarObjetivo, deletarObjetivo, adicionarTarefaObjetivo, concluirTarefaObjetivo } = useAppStore()
   const [filtro, setFiltro] = useState('todos')
   const [objetivoAberto, setObjetivoAberto] = useState(null)
@@ -95,7 +95,7 @@ export default function ObjetivosScreen() {
               <View key={objetivo.id} style={styles.cardObjetivo}>
                 <TouchableOpacity
                   style={styles.cardObjetivoHeader}
-                  onPress={() => setObjetivoAberto(aberto ? null : objetivo)}
+                  onPress={() => navigation.navigate('ObjetivoDetalhe', { objetivoId: objetivo.id })}
                   onLongPress={() => onLongPress(objetivo)}
                   delayLongPress={400}
                   activeOpacity={0.7}
@@ -144,12 +144,13 @@ export default function ObjetivosScreen() {
       </TouchableOpacity>
 
       <Modal visible={modalNovoObjetivo} transparent animationType="slide" onRequestClose={() => setModalNovoObjetivo(false)}>
-        <View style={styles.modalFundo}>
-          <View style={styles.modalContainer}>
-            <Text style={styles.modalTitulo}>{objetivoEditando ? 'Editar objetivo' : 'Novo objetivo'}</Text>
-            <Text style={styles.inputLabel}>Título</Text>
-            <TextInput style={styles.input} placeholder="Ex: Aprender a tocar guitarra" placeholderTextColor={colors.textMuted} value={novoObjetivo.titulo} onChangeText={t => setNovoObjetivo({ ...novoObjetivo, titulo: t })} autoFocus />
-            <Text style={styles.inputLabel}>Prazo</Text>
+        <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+          <View style={styles.modalFundo}>
+            <View style={styles.modalContainer}>
+              <Text style={styles.modalTitulo}>{objetivoEditando ? 'Editar objetivo' : 'Novo objetivo'}</Text>
+              <Text style={styles.inputLabel}>Título</Text>
+              <TextInput style={styles.input} placeholder="Ex: Aprender a tocar guitarra" placeholderTextColor={colors.textMuted} value={novoObjetivo.titulo} onChangeText={t => setNovoObjetivo({ ...novoObjetivo, titulo: t })} autoFocus />
+              <Text style={styles.inputLabel}>Prazo</Text>
             <View style={styles.prazoSelector}>
               {['curto', 'medio', 'longo'].map(p => (
                 <TouchableOpacity key={p} style={[styles.prazoOpcao, novoObjetivo.prazo === p && { backgroundColor: COR_PRAZO[p], borderColor: COR_PRAZO[p] }]} onPress={() => setNovoObjetivo({ ...novoObjetivo, prazo: p })}>
@@ -167,6 +168,7 @@ export default function ObjetivosScreen() {
             </View>
           </View>
         </View>
+        </KeyboardAvoidingView>
       </Modal>
 
       <Modal visible={modalNovaTarefa} transparent animationType="slide" onRequestClose={() => setModalNovaTarefa(false)}>

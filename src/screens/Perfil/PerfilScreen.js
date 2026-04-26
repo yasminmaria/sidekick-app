@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Modal, TextInput, Alert } from 'react-native'
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Modal, KeyboardAvoidingView, Platform, TextInput, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useState } from 'react'
 import { useAppStore } from '../../store/useAppStore'
@@ -125,6 +125,8 @@ export default function PerfilScreen() {
       </ScrollView>
 
       <Modal visible={modalNome} transparent animationType="slide" onRequestClose={() => setModalNome(false)}>
+        <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{ flex: 1 }}>
         <View style={styles.modalFundo}>
           <View style={styles.modalContainer}>
             <Text style={styles.modalTitulo}>Editar nome</Text>
@@ -139,6 +141,7 @@ export default function PerfilScreen() {
             </View>
           </View>
         </View>
+        </KeyboardAvoidingView>
       </Modal>
     </SafeAreaView>
   )
