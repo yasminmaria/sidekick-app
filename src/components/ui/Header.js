@@ -3,7 +3,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useAppStore } from '../../store/useAppStore'
 import { colors, spacing, radii, typography } from '../../theme'
 
-export function Header({ titulo, onVoltar }) {
+export function Header({ titulo, onVoltar, onAvatarPress }) {
   const { perfil } = useAppStore()
   const insets = useSafeAreaInsets()
 
@@ -27,11 +27,15 @@ export function Header({ titulo, onVoltar }) {
         <Text style={styles.saudacao}>Olá, {perfil.nome}! 👋</Text>
         <Text style={styles.data}>{dataFormatada()}</Text>
       </View>
-      <View style={styles.avatar}>
+      <TouchableOpacity
+        style={styles.avatar}
+        onPress={onAvatarPress}
+        activeOpacity={onAvatarPress ? 0.7 : 1}
+      >
         <Text style={styles.avatarTexto}>
           {perfil.nome.substring(0, 2).toUpperCase()}
         </Text>
-      </View>
+      </TouchableOpacity>
     </View>
   )
 }
@@ -55,8 +59,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
   },
-
-  // Modo home
   saudacao: { ...typography.h2 },
   data: { ...typography.caption, marginTop: 2, textTransform: 'capitalize' },
   avatar: {
@@ -68,8 +70,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   avatarTexto: { fontSize: 15, fontWeight: '600', color: colors.primaryDark },
-
-  // Modo tela interna
   voltarBtn: { padding: spacing.xs, minWidth: 80 },
   voltarTexto: { fontSize: 17, color: colors.primary, fontWeight: '500' },
   tituloPagina: { ...typography.h3 },

@@ -3,6 +3,8 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { useState } from 'react'
 import { useAppStore } from '../../store/useAppStore'
 import { colors, spacing, radii, typography } from '../../theme'
+import { globalStyles } from '../../theme/globalStyles'
+
 
 const CONQUISTAS = [
   { id: 'c1', emoji: '🌱', titulo: 'Primeira tarefa', desc: 'Conclua sua primeira tarefa' },
@@ -13,7 +15,7 @@ const CONQUISTAS = [
   { id: 'c6', emoji: '🏆', titulo: 'Campeão', desc: 'Alcance o nível 10', nivelNecessario: 10 },
 ]
 
-export default function PerfilScreen() {
+export default function PerfilScreen({ onFechar }) {
   const { perfil, tarefas, habitos, objetivos, alterarNome, resetarTudo } = useAppStore()
   const [modalNome, setModalNome] = useState(false)
   const [novoNome, setNovoNome] = useState(perfil.nome)
@@ -43,22 +45,30 @@ export default function PerfilScreen() {
     return tarefasFeitas > 0
   }
   function dataFormatada() {
-  return new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}
+    return new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })
+  }
 
   return (
     <SafeAreaView style={styles.container}>
-         <View style={styles.header}>
-                <View>
-                  <Text style={styles.saudacao}>Olá, {perfil.nome}! 👋</Text>
-                  <Text style={styles.data}>{dataFormatada()}</Text>
-                </View>
-                <View style={styles.avatar}>
-                  <Text style={styles.avatarTexto}>{perfil.nome.substring(0, 2).toUpperCase()}</Text>
-                </View>
-              </View>
+      <View style={globalStyles.screen}>
+        {onFechar && (
+          <View style={styles.headerFechar}>
+            <TouchableOpacity onPress={onFechar} style={styles.fecharBtn}>
+              <Text style={styles.fecharTexto}>Fechar</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+        <View>
+          <Text style={styles.saudacao}>Olá, {perfil.nome}! 👋</Text>
+          <Text style={styles.data}>{dataFormatada()}</Text>
+        </View>
+        <View style={styles.avatar}>
+          <Text style={styles.avatarTexto}>{perfil.nome.substring(0, 2).toUpperCase()}</Text>
+        </View>
+      </View>
       <ScrollView contentContainerStyle={styles.scroll}>
 
-          <View style={styles.cardNivel}>
+        <View style={styles.cardNivel}>
           <View style={styles.nivelRow}>
             <View>
               <Text style={styles.nivelLabel}>Nível atual</Text>
@@ -127,21 +137,21 @@ export default function PerfilScreen() {
 
       <Modal visible={modalNome} transparent animationType="slide" onRequestClose={() => setModalNome(false)}>
         <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={{ flex: 1 }}>
-        <View style={styles.modalFundo}>
-          <View style={styles.modalContainer}>
-            <Text style={styles.modalTitulo}>Editar nome</Text>
-            <TextInput style={styles.input} value={novoNome} onChangeText={setNovoNome} autoFocus maxLength={20} />
-            <View style={styles.modalBotoes}>
-              <TouchableOpacity style={styles.botaoCancelar} onPress={() => setModalNome(false)}>
-                <Text style={styles.botaoCancelarTexto}>Cancelar</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.botaoSalvar} onPress={salvarNome}>
-                <Text style={styles.botaoSalvarTexto}>Salvar</Text>
-              </TouchableOpacity>
+          style={{ flex: 1 }}>
+          <View style={styles.modalFundo}>
+            <View style={styles.modalContainer}>
+              <Text style={styles.modalTitulo}>Editar nome</Text>
+              <TextInput style={styles.input} value={novoNome} onChangeText={setNovoNome} autoFocus maxLength={20} />
+              <View style={styles.modalBotoes}>
+                <TouchableOpacity style={styles.botaoCancelar} onPress={() => setModalNome(false)}>
+                  <Text style={styles.botaoCancelarTexto}>Cancelar</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.botaoSalvar} onPress={salvarNome}>
+                  <Text style={styles.botaoSalvarTexto}>Salvar</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
-        </View>
         </KeyboardAvoidingView>
       </Modal>
     </SafeAreaView>
@@ -149,6 +159,16 @@ export default function PerfilScreen() {
 }
 
 const styles = StyleSheet.create({
+  headerFechar: {
+  flexDirection: 'row',
+  justifyContent: 'flex-end',
+  paddingHorizontal: spacing.md,
+  paddingTop: spacing.xxl,
+  paddingBottom: spacing.sm,
+  backgroundColor: colors.background,
+},
+fecharBtn: { padding: spacing.xs },
+fecharTexto: { color: colors.primary, fontWeight: '600', fontSize: 15 },
   container: { flex: 1, backgroundColor: colors.background },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.lg, paddingHorizontal: spacing.md },
   scroll: { padding: spacing.md, paddingBottom: spacing.xxl },

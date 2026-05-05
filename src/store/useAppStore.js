@@ -35,7 +35,7 @@ export const useAppStore = create(
         const { tarefas } = get()
         set({ tarefas: [...tarefas, { ...tarefa, id: Date.now().toString(), concluida: false, recompensada: false }] })
       },
-      
+
       editarTarefa: (id, dados) => {
         const { tarefas } = get()
         set({ tarefas: tarefas.map(t => t.id === id ? { ...t, ...dados } : t) })
@@ -166,13 +166,13 @@ export const useAppStore = create(
           objetivos: objetivos.map(o =>
             o.id === objetivoId
               ? {
-                ...o,
-                tarefas: [...o.tarefas, {
-                  id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-                  titulo,
-                  concluida: false
-                }]
-              }
+                  ...o,
+                  tarefas: [...o.tarefas, {
+                    id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+                    titulo,
+                    concluida: false,
+                  }]
+                }
               : o
           )
         })
@@ -266,6 +266,35 @@ export const useAppStore = create(
           )
         })
         if (!jaTomou) { ganharXP(5); ganharMoedas(1) }
+      },
+
+      // =========================
+      // HUMOR
+      // =========================
+      registrosHumor: [],
+
+      registrarHumor: (emoji, valor, nota) => {
+        nota = nota || ''
+        const { registrosHumor } = get()
+        const agora = new Date()
+        const hora = agora.getHours()
+        const periodo = hora < 12 ? 'manha' : hora < 18 ? 'tarde' : 'noite'
+        const novoRegistro = {
+          id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+          emoji,
+          valor,
+          nota,
+          periodo,
+          hora: agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+          data: agora.toISOString().split('T')[0],
+          timestamp: agora.toISOString(),
+        }
+        set({ registrosHumor: [novoRegistro, ...registrosHumor] })
+      },
+
+      deletarRegistroHumor: (id) => {
+        const { registrosHumor } = get()
+        set({ registrosHumor: registrosHumor.filter(r => r.id !== id) })
       },
 
       // =========================

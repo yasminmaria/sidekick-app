@@ -9,6 +9,7 @@ import { SectionHeader } from '../../components/ui/SectionHeader'
 import { XPBar } from '../../components/ui/XPBar'
 import { EmptyState } from '../../components/ui/EmptyState'
 import { BadgeXP, BadgeMoeda, BadgeRepeticao } from '../../components/ui/Badge'
+import PerfilScreen from '../Perfil/PerfilScreen'
 
 const FREQUENCIAS = [
   { valor: 'diaria', label: '📅 Diária' },
@@ -26,16 +27,19 @@ const DIAS_SEMANA = [
   { valor: 'sab', label: 'S' },
 ]
 
+
+
 function estadoInicial() {
   return { titulo: '', xp: '20', moedas: '5', repetitiva: false, frequencia: 'diaria', dias: ['seg', 'ter', 'qua', 'qui', 'sex'] }
 }
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }) {
   const { perfil, tarefas, concluirTarefa, adicionarTarefa, editarTarefa, deletarTarefa } = useAppStore()
   const [modalVisivel, setModalVisivel] = useState(false)
   const [tarefaEditando, setTarefaEditando] = useState(null)
   const [form, setForm] = useState(estadoInicial())
   const [chatVisivel, setChatVisivel] = useState(false)
+  const [perfilVisivel, setPerfilVisivel] = useState(false)
 
   function abrirCriar() {
     setTarefaEditando(null)
@@ -105,7 +109,15 @@ export default function HomeScreen() {
     <View style={globalStyles.screen}>
 
       {/* HEADER GLOBAL */}
-      <Header />
+      <Header onAvatarPress={() => setPerfilVisivel(true)} />
+
+      <Modal
+        visible={perfilVisivel}
+        animationType="slide"
+        onRequestClose={() => setPerfilVisivel(false)}
+      >
+        <PerfilScreen onFechar={() => setPerfilVisivel(false)} />
+      </Modal>
 
       <ScrollView contentContainerStyle={globalStyles.scroll}>
 
@@ -305,7 +317,13 @@ export default function HomeScreen() {
           </ScrollView>
         </View>
       </Modal>
-
+      <Modal
+        visible={perfilVisivel}
+        animationType="slide"
+        onRequestClose={() => setPerfilVisivel(false)}
+      >
+        <PerfilScreen onFechar={() => setPerfilVisivel(false)} />
+      </Modal>
     </View>
   )
 }

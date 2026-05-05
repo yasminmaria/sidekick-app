@@ -3,13 +3,12 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { useState } from 'react'
 import { useAppStore } from '../../store/useAppStore'
 import { colors, spacing, radii, typography } from '../../theme'
-
-const perfil = useAppStore.getState().perfil
+import { Header } from '../../components/ui/Header'
 
 function dataFormatada() {
   const agora = new Date()
   return agora.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })
-}   
+}
 
 const PRAZOS = [
   { valor: 'todos', label: 'Todos' },
@@ -30,6 +29,8 @@ export default function ObjetivosScreen({ navigation }) {
   const [modalNovaTarefa, setModalNovaTarefa] = useState(false)
   const [novoObjetivo, setNovoObjetivo] = useState({ titulo: '', prazo: 'curto' })
   const [novaTarefa, setNovaTarefa] = useState('')
+  const [tarefaEditando, setTarefaEditando] = useState(null)
+  const [chatVisivel, setChatVisivel] = useState(false)
 
   const objetivosFiltrados = filtro === 'todos' ? objetivos : objetivos.filter(o => o.prazo === filtro)
 
@@ -79,16 +80,7 @@ export default function ObjetivosScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <View>
-          <Text style={styles.saudacao}>Olá, {perfil.nome}! 👋</Text>
-          <Text style={styles.data}>{dataFormatada()}</Text>
-        </View>
-        <View style={styles.avatar}>
-          <Text style={styles.avatarTexto}>{perfil.nome.substring(0, 2).toUpperCase()}</Text>
-        </View>
-      </View>
-
+      <Header titulo="Objetivos" />
       <ScrollView contentContainerStyle={styles.scroll}>
         <Text style={styles.titulo}>Objetivos</Text>
 
@@ -158,8 +150,8 @@ export default function ObjetivosScreen({ navigation }) {
       </ScrollView>
 
       <TouchableOpacity style={styles.fabChat} onPress={() => setChatVisivel(true)}>
-              <Text style={styles.fabChatTexto}>✨</Text>
-            </TouchableOpacity>
+        <Text style={styles.fabChatTexto}>✨</Text>
+      </TouchableOpacity>
 
       <Modal visible={modalNovoObjetivo} transparent animationType="slide" onRequestClose={() => setModalNovoObjetivo(false)}>
         <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
@@ -213,11 +205,6 @@ export default function ObjetivosScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.lg, paddingHorizontal: spacing.md },
-  saudacao: { ...typography.h2 },
-  data: { ...typography.caption, marginTop: 2, textTransform: 'capitalize' },
-  avatar: { width: 44, height: 44, borderRadius: radii.full, backgroundColor: colors.primaryLight, alignItems: 'center', justifyContent: 'center' },
-  avatarTexto: { fontSize: 15, fontWeight: '600', color: colors.primaryDark },
   scroll: { paddingBottom: 100 },
   titulo: { ...typography.h2, padding: spacing.md, paddingBottom: spacing.sm },
   filtros: { paddingHorizontal: spacing.md, marginBottom: spacing.md },

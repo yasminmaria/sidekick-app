@@ -24,9 +24,19 @@ export default function ChatModal({ visivel, onFechar }) {
       tipo: 'texto',
     }
   ])
+  const GRUPOS_SUGESTOES = [
+    ['Criar uma tarefa', 'Novo objetivo', 'Adicionar hábito', 'Como estou hoje?', 'Registrar medicamento'],
+    ['Quantas tarefas tenho?', 'Me dá uma dica de foco', 'Criar evento amanhã', 'Meu progresso hoje', 'Sugerir hábito saudável'],
+    ['Qual meu nível atual?', 'Criar tarefa difícil', 'Novo objetivo de longo prazo', 'Me motiva!', 'Adicionar consulta médica'],
+  ]
+
   const [input, setInput] = useState('')
   const [carregando, setCarregando] = useState(false)
   const scrollRef = useRef(null)
+  const [grupoAtual, setGrupoAtual] = useState(0)
+
+
+
 
   function montarContexto() {
     return {
@@ -125,9 +135,11 @@ export default function ChatModal({ visivel, onFechar }) {
 
       setMensagens(prev => [...prev, novaMensagemIA])
     } catch (erro) {
+      console.log('ERRO COMPLETO:', erro)
+      console.log('MENSAGEM:', erro.message)
       setMensagens(prev => [...prev, {
         role: 'assistant',
-        content: 'Ops, tive um problema para processar sua mensagem. Pode tentar de novo?',
+        content: `Erro: ${erro.message}`,
         tipo: 'erro',
       }])
     } finally {
@@ -178,22 +190,25 @@ export default function ChatModal({ visivel, onFechar }) {
           </View>
 
           {/* SUGESTÕES RÁPIDAS */}
+
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.sugestoesRapidas}>
-            {[
-              'Criar uma tarefa',
-              'Novo objetivo',
-              'Adicionar hábito',
-              'Como estou hoje?',
-              'Registrar medicamento',
-            ].map(s => (
+            {GRUPOS_SUGESTOES[grupoAtual].map(s => (
               <TouchableOpacity
                 key={s}
                 style={styles.sugestaoRapida}
-                onPress={() => { setInput(s) }}
+                onPress={() => setInput(s)}
               >
                 <Text style={styles.sugestaoRapidaTexto}>{s}</Text>
               </TouchableOpacity>
             ))}
+
+            {/* Botão para trocar o grupo */}
+            <TouchableOpacity
+              style={styles.sugestaoTrocar}
+              onPress={() => setGrupoAtual(atual => (atual + 1) % GRUPOS_SUGESTOES.length)}
+            >
+              <Text style={styles.sugestaoTrocarTexto}>↻</Text>
+            </TouchableOpacity>
           </ScrollView>
 
           {/* MENSAGENS */}
@@ -286,6 +301,19 @@ const styles = StyleSheet.create({
   sugestoesRapidas: { paddingHorizontal: spacing.md, paddingVertical: spacing.sm, maxHeight: 48, backgroundColor: colors.surface, borderBottomWidth: 1, borderBottomColor: colors.border },
   sugestaoRapida: { backgroundColor: colors.primaryLight, paddingHorizontal: spacing.md, paddingVertical: spacing.xs, borderRadius: radii.full, marginRight: spacing.sm },
   sugestaoRapidaTexto: { color: colors.primaryDark, fontSize: 13, fontWeight: '500' },
+  sugestaoTrocar: {
+    backgroundColor: colors.border,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs,
+    borderRadius: radii.full,
+    marginRight: spacing.sm,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  sugestaoTrocarTexto: {
+    fontSize: 16,
+    color: colors.textSecondary,
+  },
 
   mensagens: { flex: 1 },
   mensagensConteudo: { padding: spacing.md, paddingBottom: spacing.xl },
