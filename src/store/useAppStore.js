@@ -166,13 +166,13 @@ export const useAppStore = create(
           objetivos: objetivos.map(o =>
             o.id === objetivoId
               ? {
-                  ...o,
-                  tarefas: [...o.tarefas, {
-                    id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-                    titulo,
-                    concluida: false,
-                  }]
-                }
+                ...o,
+                tarefas: [...o.tarefas, {
+                  id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+                  titulo,
+                  concluida: false,
+                }]
+              }
               : o
           )
         })
@@ -195,25 +195,64 @@ export const useAppStore = create(
       // HÁBITOS
       // =========================
       habitos: [
-        { id: 'h1', titulo: 'Beber água', emoji: '💧', streak: 3, concluidoHoje: false },
-        { id: 'h2', titulo: 'Meditar', emoji: '🧘', streak: 1, concluidoHoje: false },
-        { id: 'h3', titulo: 'Exercício', emoji: '🏃', streak: 0, concluidoHoje: false },
+        { id: 'h1', titulo: 'Beber água', emoji: '💧', streak: 3, concluidoHoje: false, tipo: 'contador', meta: 8, unidade: 'copos', progresso: 0 },
+        { id: 'h2', titulo: 'Meditar', emoji: '🧘', streak: 1, concluidoHoje: false, tipo: 'simples', meta: null, unidade: null, progresso: 0 },
+        { id: 'h3', titulo: 'Exercício', emoji: '🏃', streak: 0, concluidoHoje: false, tipo: 'simples', meta: null, unidade: null, progresso: 0 },
       ],
+
+      
 
       adicionarHabito: (habito) => {
         const { habitos } = get()
-        set({ habitos: [...habitos, { ...habito, id: Date.now().toString(), streak: 0, concluidoHoje: false }] })
+        set({
+          habitos: [...habitos, {
+            ...habito,
+            id: Date.now().toString(),
+            streak: 0,
+            concluidoHoje: false,
+            progresso: 0,
+          }]
+        })
       },
 
       concluirHabito: (id) => {
         const { habitos, ganharXP, ganharMoedas } = get()
         const habito = habitos.find(h => h.id === id)
         if (!habito || habito.concluidoHoje) return
-        set({ habitos: habitos.map(h => h.id === id ? { ...h, concluidoHoje: true, streak: h.streak + 1 } : h) })
+        set({
+          habitos: habitos.map(h =>
+            h.id === id ? { ...h, concluidoHoje: true, streak: h.streak + 1 } : h
+          )
+        })
         ganharXP(10)
         ganharMoedas(2)
       },
 
+      incrementarHabito: (id, quantidade) => {
+        const { habitos, ganharXP, ganharMoedas } = get()
+        const habito = habitos.find(h => h.id === id)
+        if (!habito || habito.concluidoHoje) return
+
+        const novoProgresso = Math.max(0, habito.progresso + quantidade)
+        const atingiuMeta = novoProgresso >= habito.meta
+
+        set({
+          habitos: habitos.map(h =>
+            h.id === id ? {
+              ...h,
+              progresso: novoProgresso,
+              concluidoHoje: atingiuMeta,
+              streak: atingiuMeta && !h.concluidoHoje ? h.streak + 1 : h.streak,
+            } : h
+          )
+        })
+
+        // Ganha XP só quando conclui pela primeira vez
+        if (atingiuMeta && !habito.concluidoHoje) {
+          ganharXP(10)
+          ganharMoedas(2)
+        }
+      },
       // =========================
       // MEDICAMENTOS
       // =========================

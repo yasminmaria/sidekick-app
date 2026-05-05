@@ -39,12 +39,28 @@ function estadoInicialMed() {
 }
 
 export default function CuidadosScreen() {
-  const { habitos, adicionarHabito, concluirHabito, medicamentos, adicionarMedicamento, editarMedicamento, deletarMedicamento, registrarDose } = useAppStore()
+  const {
+    habitos,
+    adicionarHabito,
+    concluirHabito,
+    incrementarHabito,
+    medicamentos,
+    adicionarMedicamento,
+    editarMedicamento,
+    deletarMedicamento,
+    registrarDose
+  } = useAppStore()
 
   const [abaAtiva, setAbaAtiva] = useState('habitos')
   const [modalHabito, setModalHabito] = useState(false)
   const [modalMedicamento, setModalMedicamento] = useState(false)
-  const [novoHabito, setNovoHabito] = useState({ titulo: '', emoji: '⭐' })
+  const [novoHabito, setNovoHabito] = useState({
+    titulo: '',
+    emoji: '⭐',
+    tipo: 'simples',
+    meta: '8',
+    unidade: 'vezes',
+  })
   const [novoMed, setNovoMed] = useState(estadoInicialMed())
   const [medEditando, setMedEditando] = useState(null)
   const [novoHorario, setNovoHorario] = useState('')
@@ -53,8 +69,14 @@ export default function CuidadosScreen() {
 
   function salvarHabito() {
     if (!novoHabito.titulo.trim()) return
-    adicionarHabito(novoHabito)
-    setNovoHabito({ titulo: '', emoji: '⭐' })
+    adicionarHabito({
+      titulo: novoHabito.titulo,
+      emoji: novoHabito.emoji,
+      tipo: novoHabito.tipo,
+      meta: novoHabito.tipo === 'contador' ? parseInt(novoHabito.meta) || 1 : null,
+      unidade: novoHabito.tipo === 'contador' ? novoHabito.unidade : null,
+    })
+    setNovoHabito({ titulo: '', emoji: '⭐', tipo: 'simples', meta: '8', unidade: 'vezes' })
     setModalHabito(false)
   }
 
@@ -74,11 +96,12 @@ export default function CuidadosScreen() {
   function onLongPressMed(med) {
     Alert.alert(med.nome, 'O que deseja fazer?', [
       { text: 'Editar', onPress: () => abrirEditarMed(med) },
-      { text: 'Deletar', style: 'destructive', onPress: () =>
-        Alert.alert('Deletar medicamento?', `"${med.nome}" será removido.`, [
-          { text: 'Cancelar', style: 'cancel' },
-          { text: 'Deletar', style: 'destructive', onPress: () => deletarMedicamento(med.id) },
-        ])
+      {
+        text: 'Deletar', style: 'destructive', onPress: () =>
+          Alert.alert('Deletar medicamento?', `"${med.nome}" será removido.`, [
+            { text: 'Cancelar', style: 'cancel' },
+            { text: 'Deletar', style: 'destructive', onPress: () => deletarMedicamento(med.id) },
+          ])
       },
       { text: 'Cancelar', style: 'cancel' },
     ])
@@ -141,6 +164,7 @@ export default function CuidadosScreen() {
 
         {abaAtiva === 'habitos' && (
           <View>
+            {/* RESUMO */}
             <View style={styles.resumoCard}>
               <Text style={styles.resumoTitulo}>Progresso de hoje</Text>
               <View style={styles.resumoRow}>
@@ -179,23 +203,84 @@ export default function CuidadosScreen() {
                 <Text style={styles.vazioDica}>Crie hábitos para acompanhar seu dia</Text>
               </View>
             ) : (
-              habitos.map(habito => (
-                <TouchableOpacity key={habito.id} style={[styles.cardHabito, habito.concluidoHoje && styles.cardHabitoConcluido]} onPress={() => concluirHabito(habito.id)} activeOpacity={0.7}>
-                  <View style={styles.habitoEmoji}>
-                    <Text style={styles.habitoEmojiTexto}>{habito.emoji}</Text>
-                  </View>
-                  <View style={styles.habitoInfo}>
-                    <Text style={[styles.habitoTitulo, habito.concluidoHoje && styles.habitoConcluido]}>{habito.titulo}</Text>
-                    <Text style={styles.habitoStreak}>🔥 {habito.streak} dias seguidos</Text>
-                  </View>
-                  <View style={[styles.habitoCheck, habito.concluidoHoje && styles.habitoCheckFeito]}>
-                    {habito.concluidoHoje ? <Text style={styles.checkmark}>✓</Text> : <Text style={styles.checkmarkVazio}>○</Text>}
-                  </View>
-                </TouchableOpacity>
-              ))
+              habitos.map(habito => {
+                // ... código dos cards que você já tem
+              })
             )}
           </View>
         )}
+        {abaAtiva === 'habitos' && habitos.map(habito => {
+          const ehContador = habito.tipo === 'contador'
+          const porcentagem = ehContador && habito.meta
+            ? Math.min(Math.round((habito.progresso / habito.meta) * 100), 100)
+            : 0
+
+          return (
+            <View
+              key={habito.id}
+              style={[styles.cardHabito, habito.concluidoHoje && styles.cardHabitoConcluido]}
+            >
+              <View style={styles.habitoEmoji}>
+                <Text style={styles.habitoEmojiTexto}>{habito.emoji}</Text>
+              </View>
+
+              <View style={styles.habitoInfo}>
+                <Text style={[styles.habitoTitulo, habito.concluidoHoje && styles.habitoConcluido]}>
+                  {habito.titulo}
+                </Text>
+
+                {ehContador ? (
+                  <View>
+                    <Text style={styles.habitoStreak}>
+                      {habito.progresso}/{habito.meta} {habito.unidade} · 🔥 {habito.streak} dias
+                    </Text>
+                    {/* Barra de progresso */}
+                    <View style={styles.habitoBarraFundo}>
+                      <View style={[
+                        styles.habitoBarraPreenchida,
+                        { width: `${porcentagem}%` },
+                        habito.concluidoHoje && { backgroundColor: colors.success }
+                      ]} />
+                    </View>
+                  </View>
+                ) : (
+                  <Text style={styles.habitoStreak}>🔥 {habito.streak} dias seguidos</Text>
+                )}
+              </View>
+
+              {/* Ações */}
+              {ehContador ? (
+                <View style={styles.contadorAcoes}>
+                  <TouchableOpacity
+                    style={[styles.contadorBtn, habito.concluidoHoje && styles.contadorBtnDesabilitado]}
+                    onPress={() => !habito.concluidoHoje && incrementarHabito(habito.id, -1)}
+                  >
+                    <Text style={styles.contadorBtnTexto}>−</Text>
+                  </TouchableOpacity>
+                  <Text style={styles.contadorValor}>{habito.progresso}</Text>
+                  <TouchableOpacity
+                    style={[styles.contadorBtn, styles.contadorBtnPlus, habito.concluidoHoje && styles.contadorBtnDesabilitado]}
+                    onPress={() => !habito.concluidoHoje && incrementarHabito(habito.id, 1)}
+                  >
+                    <Text style={[styles.contadorBtnTexto, { color: 'white' }]}>+</Text>
+                  </TouchableOpacity>
+                </View>
+              ) : (
+                <TouchableOpacity
+                  style={[styles.habitoCheck, habito.concluidoHoje && styles.habitoCheckFeito]}
+                  onPress={() => concluirHabito(habito.id)}
+                >
+                  {habito.concluidoHoje
+                    ? <Text style={styles.checkmark}>✓</Text>
+                    : <Text style={styles.checkmarkVazio}>○</Text>
+                  }
+                </TouchableOpacity>
+              )}
+            </View>
+          )
+        })
+        }
+
 
         {abaAtiva === 'medicamentos' && (
           <View>
@@ -266,7 +351,7 @@ export default function CuidadosScreen() {
             <Text style={styles.modalTitulo}>Novo hábito</Text>
             <Text style={styles.inputLabel}>Emoji</Text>
             <View style={styles.emojiRow}>
-              {['💧','🏃','🧘','📚','🥗','😴','💊','✍️'].map(e => (
+              {['💧', '🏃', '🧘', '📚', '🥗', '😴', '💊', '✍️'].map(e => (
                 <TouchableOpacity key={e} style={[styles.emojiOpcao, novoHabito.emoji === e && styles.emojiSelecionado]} onPress={() => setNovoHabito({ ...novoHabito, emoji: e })}>
                   <Text style={{ fontSize: 22 }}>{e}</Text>
                 </TouchableOpacity>
@@ -293,114 +378,114 @@ export default function CuidadosScreen() {
               <View style={styles.modalContainer}>
                 <Text style={styles.modalTitulo}>{medEditando ? 'Editar medicamento' : 'Novo medicamento'}</Text>
 
-              <Text style={styles.inputLabel}>Nome</Text>
-              <TextInput style={styles.input} placeholder="Ex: Ritalina, Venvanse..." placeholderTextColor={colors.textMuted} value={novoMed.nome} onChangeText={t => setNovoMed({ ...novoMed, nome: t })} autoFocus />
+                <Text style={styles.inputLabel}>Nome</Text>
+                <TextInput style={styles.input} placeholder="Ex: Ritalina, Venvanse..." placeholderTextColor={colors.textMuted} value={novoMed.nome} onChangeText={t => setNovoMed({ ...novoMed, nome: t })} autoFocus />
 
-              <Text style={styles.inputLabel}>Tipo</Text>
-              <View style={styles.tipoRow}>
-                {TIPOS.map(t => (
-                  <TouchableOpacity key={t.valor} style={[styles.tipoOpcao, novoMed.tipo === t.valor && styles.tipoAtivo]} onPress={() => setNovoMed({ ...novoMed, tipo: t.valor })}>
-                    <Text style={[styles.tipoTexto, novoMed.tipo === t.valor && styles.tipoTextoAtivo]}>{t.label}</Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-
-              <Text style={styles.inputLabel}>Dosagem</Text>
-              <TextInput style={styles.input} placeholder="Ex: 18mg, 10ml" placeholderTextColor={colors.textMuted} value={novoMed.dosagem} onChangeText={t => setNovoMed({ ...novoMed, dosagem: t })} />
-
-              <Text style={styles.inputLabel}>Frequência</Text>
-              <View style={styles.frequenciaRow}>
-                {FREQUENCIAS_MED.map(f => (
-                  <TouchableOpacity key={f.valor} style={[styles.frequenciaOpcao, novoMed.frequencia === f.valor && styles.frequenciaAtiva]} onPress={() => setNovoMed({ ...novoMed, frequencia: f.valor })}>
-                    <Text style={[styles.frequenciaTexto, novoMed.frequencia === f.valor && styles.frequenciaTextoAtivo]}>{f.label}</Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-
-              {novoMed.frequencia === 'semanal' && (
-                <View style={styles.diasContainer}>
-                  <Text style={styles.inputLabel}>Dias da semana</Text>
-                  <View style={styles.diasRow}>
-                    {DIAS_SEMANA.map(dia => {
-                      const selecionado = novoMed.dias.includes(dia.valor)
-                      return (
-                        <TouchableOpacity key={dia.valor} style={[styles.diaBtn, selecionado && styles.diaBtnAtivo]} onPress={() => toggleDiaMed(dia.valor)}>
-                          <Text style={[styles.diaBtnTexto, selecionado && styles.diaBtnTextoAtivo]}>{dia.label}</Text>
-                        </TouchableOpacity>
-                      )
-                    })}
-                  </View>
-                </View>
-              )}
-
-              {novoMed.frequencia !== 'quando_necessario' && (
-                <View>
-                  <Text style={styles.inputLabel}>Horários</Text>
-                  <View style={styles.horariosSugeridos}>
-                    {HORARIOS_SUGERIDOS.map(h => {
-                      const selecionado = novoMed.horarios.includes(h)
-                      return (
-                        <TouchableOpacity key={h} style={[styles.horarioSugerido, selecionado && styles.horarioSugeridoAtivo]} onPress={() => toggleHorario(h)}>
-                          <Text style={[styles.horarioSugeridoTexto, selecionado && styles.horarioSugeridoTextoAtivo]}>{h}</Text>
-                        </TouchableOpacity>
-                      )
-                    })}
-                  </View>
-                  <View style={styles.horarioCustomRow}>
-                    <TextInput style={[styles.input, { flex: 1, marginBottom: 0 }]} placeholder="Outro horário (ex: 07:30)" placeholderTextColor={colors.textMuted} value={novoHorario} onChangeText={setNovoHorario} keyboardType="numeric" />
-                    <TouchableOpacity style={styles.horarioCustomBtn} onPress={adicionarHorarioCustom}>
-                      <Text style={styles.horarioCustomBtnTexto}>+</Text>
+                <Text style={styles.inputLabel}>Tipo</Text>
+                <View style={styles.tipoRow}>
+                  {TIPOS.map(t => (
+                    <TouchableOpacity key={t.valor} style={[styles.tipoOpcao, novoMed.tipo === t.valor && styles.tipoAtivo]} onPress={() => setNovoMed({ ...novoMed, tipo: t.valor })}>
+                      <Text style={[styles.tipoTexto, novoMed.tipo === t.valor && styles.tipoTextoAtivo]}>{t.label}</Text>
                     </TouchableOpacity>
+                  ))}
+                </View>
+
+                <Text style={styles.inputLabel}>Dosagem</Text>
+                <TextInput style={styles.input} placeholder="Ex: 18mg, 10ml" placeholderTextColor={colors.textMuted} value={novoMed.dosagem} onChangeText={t => setNovoMed({ ...novoMed, dosagem: t })} />
+
+                <Text style={styles.inputLabel}>Frequência</Text>
+                <View style={styles.frequenciaRow}>
+                  {FREQUENCIAS_MED.map(f => (
+                    <TouchableOpacity key={f.valor} style={[styles.frequenciaOpcao, novoMed.frequencia === f.valor && styles.frequenciaAtiva]} onPress={() => setNovoMed({ ...novoMed, frequencia: f.valor })}>
+                      <Text style={[styles.frequenciaTexto, novoMed.frequencia === f.valor && styles.frequenciaTextoAtivo]}>{f.label}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+
+                {novoMed.frequencia === 'semanal' && (
+                  <View style={styles.diasContainer}>
+                    <Text style={styles.inputLabel}>Dias da semana</Text>
+                    <View style={styles.diasRow}>
+                      {DIAS_SEMANA.map(dia => {
+                        const selecionado = novoMed.dias.includes(dia.valor)
+                        return (
+                          <TouchableOpacity key={dia.valor} style={[styles.diaBtn, selecionado && styles.diaBtnAtivo]} onPress={() => toggleDiaMed(dia.valor)}>
+                            <Text style={[styles.diaBtnTexto, selecionado && styles.diaBtnTextoAtivo]}>{dia.label}</Text>
+                          </TouchableOpacity>
+                        )
+                      })}
+                    </View>
                   </View>
-                </View>
-              )}
+                )}
 
-              <Text style={styles.inputLabel}>Duração do tratamento</Text>
-              <View style={styles.duracaoRow}>
-                {[{ valor: 'continuo', label: '♾️ Uso contínuo' }, { valor: 'com_termino', label: '📅 Com término' }].map(d => (
-                  <TouchableOpacity key={d.valor} style={[styles.duracaoOpcao, novoMed.duracao === d.valor && styles.duracaoAtiva]} onPress={() => setNovoMed({ ...novoMed, duracao: d.valor })}>
-                    <Text style={[styles.duracaoTexto, novoMed.duracao === d.valor && styles.duracaoTextoAtivo]}>{d.label}</Text>
+                {novoMed.frequencia !== 'quando_necessario' && (
+                  <View>
+                    <Text style={styles.inputLabel}>Horários</Text>
+                    <View style={styles.horariosSugeridos}>
+                      {HORARIOS_SUGERIDOS.map(h => {
+                        const selecionado = novoMed.horarios.includes(h)
+                        return (
+                          <TouchableOpacity key={h} style={[styles.horarioSugerido, selecionado && styles.horarioSugeridoAtivo]} onPress={() => toggleHorario(h)}>
+                            <Text style={[styles.horarioSugeridoTexto, selecionado && styles.horarioSugeridoTextoAtivo]}>{h}</Text>
+                          </TouchableOpacity>
+                        )
+                      })}
+                    </View>
+                    <View style={styles.horarioCustomRow}>
+                      <TextInput style={[styles.input, { flex: 1, marginBottom: 0 }]} placeholder="Outro horário (ex: 07:30)" placeholderTextColor={colors.textMuted} value={novoHorario} onChangeText={setNovoHorario} keyboardType="numeric" />
+                      <TouchableOpacity style={styles.horarioCustomBtn} onPress={adicionarHorarioCustom}>
+                        <Text style={styles.horarioCustomBtnTexto}>+</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                )}
+
+                <Text style={styles.inputLabel}>Duração do tratamento</Text>
+                <View style={styles.duracaoRow}>
+                  {[{ valor: 'continuo', label: '♾️ Uso contínuo' }, { valor: 'com_termino', label: '📅 Com término' }].map(d => (
+                    <TouchableOpacity key={d.valor} style={[styles.duracaoOpcao, novoMed.duracao === d.valor && styles.duracaoAtiva]} onPress={() => setNovoMed({ ...novoMed, duracao: d.valor })}>
+                      <Text style={[styles.duracaoTexto, novoMed.duracao === d.valor && styles.duracaoTextoAtivo]}>{d.label}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+
+                {novoMed.duracao === 'com_termino' && (
+                  <View>
+                    <Text style={styles.inputLabel}>Data de término</Text>
+                    <TextInput style={styles.input} placeholder="AAAA-MM-DD" placeholderTextColor={colors.textMuted} value={novoMed.dataTermino || ''} onChangeText={t => setNovoMed({ ...novoMed, dataTermino: t })} />
+                  </View>
+                )}
+
+                <Text style={styles.inputLabel}>Quantidade em estoque</Text>
+                <TextInput style={styles.input} placeholder="Ex: 30" placeholderTextColor={colors.textMuted} keyboardType="numeric" value={novoMed.quantidade} onChangeText={t => setNovoMed({ ...novoMed, quantidade: t })} />
+
+                <View style={styles.toggleRow}>
+                  <View>
+                    <Text style={styles.toggleLabel}>Avisar reposição</Text>
+                    <Text style={styles.toggleDesc}>Alerta quando o estoque estiver baixo</Text>
+                  </View>
+                  <Switch value={novoMed.avisarReposicao} onValueChange={v => setNovoMed({ ...novoMed, avisarReposicao: v })} trackColor={{ false: colors.border, true: colors.teal }} thumbColor="white" />
+                </View>
+
+                {novoMed.avisarReposicao && (
+                  <View>
+                    <Text style={styles.inputLabel}>Avisar quando restar</Text>
+                    <TextInput style={styles.input} placeholder="Ex: 10" placeholderTextColor={colors.textMuted} keyboardType="numeric" value={novoMed.quantidadeAviso} onChangeText={t => setNovoMed({ ...novoMed, quantidadeAviso: t })} />
+                  </View>
+                )}
+
+                <View style={styles.modalBotoes}>
+                  <TouchableOpacity style={styles.botaoCancelar} onPress={() => setModalMedicamento(false)}>
+                    <Text style={styles.botaoCancelarTexto}>Cancelar</Text>
                   </TouchableOpacity>
-                ))}
-              </View>
-
-              {novoMed.duracao === 'com_termino' && (
-                <View>
-                  <Text style={styles.inputLabel}>Data de término</Text>
-                  <TextInput style={styles.input} placeholder="AAAA-MM-DD" placeholderTextColor={colors.textMuted} value={novoMed.dataTermino || ''} onChangeText={t => setNovoMed({ ...novoMed, dataTermino: t })} />
+                  <TouchableOpacity style={[styles.botaoSalvar, { backgroundColor: colors.teal }, !novoMed.nome.trim() && styles.botaoSalvarDesabilitado]} onPress={salvarMedicamento}>
+                    <Text style={styles.botaoSalvarTexto}>{medEditando ? 'Salvar alterações' : 'Salvar'}</Text>
+                  </TouchableOpacity>
                 </View>
-              )}
-
-              <Text style={styles.inputLabel}>Quantidade em estoque</Text>
-              <TextInput style={styles.input} placeholder="Ex: 30" placeholderTextColor={colors.textMuted} keyboardType="numeric" value={novoMed.quantidade} onChangeText={t => setNovoMed({ ...novoMed, quantidade: t })} />
-
-              <View style={styles.toggleRow}>
-                <View>
-                  <Text style={styles.toggleLabel}>Avisar reposição</Text>
-                  <Text style={styles.toggleDesc}>Alerta quando o estoque estiver baixo</Text>
-                </View>
-                <Switch value={novoMed.avisarReposicao} onValueChange={v => setNovoMed({ ...novoMed, avisarReposicao: v })} trackColor={{ false: colors.border, true: colors.teal }} thumbColor="white" />
               </View>
-
-              {novoMed.avisarReposicao && (
-                <View>
-                  <Text style={styles.inputLabel}>Avisar quando restar</Text>
-                  <TextInput style={styles.input} placeholder="Ex: 10" placeholderTextColor={colors.textMuted} keyboardType="numeric" value={novoMed.quantidadeAviso} onChangeText={t => setNovoMed({ ...novoMed, quantidadeAviso: t })} />
-                </View>
-              )}
-
-              <View style={styles.modalBotoes}>
-                <TouchableOpacity style={styles.botaoCancelar} onPress={() => setModalMedicamento(false)}>
-                  <Text style={styles.botaoCancelarTexto}>Cancelar</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={[styles.botaoSalvar, { backgroundColor: colors.teal }, !novoMed.nome.trim() && styles.botaoSalvarDesabilitado]} onPress={salvarMedicamento}>
-                  <Text style={styles.botaoSalvarTexto}>{medEditando ? 'Salvar alterações' : 'Salvar'}</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </ScrollView>
-        </View>
-      </KeyboardAvoidingView>
+            </ScrollView>
+          </View>
+        </KeyboardAvoidingView>
       </Modal>
     </SafeAreaView>
   )
@@ -408,7 +493,7 @@ export default function CuidadosScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
-    header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.lg, paddingHorizontal: spacing.md },
+  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.lg, paddingHorizontal: spacing.md },
   saudacao: { ...typography.h2 },
   data: { ...typography.caption, marginTop: 2, textTransform: 'capitalize' },
   avatar: { width: 44, height: 44, borderRadius: radii.full, backgroundColor: colors.primaryLight, alignItems: 'center', justifyContent: 'center' },
@@ -444,6 +529,34 @@ const styles = StyleSheet.create({
   habitoStreak: { ...typography.caption, marginTop: 2 },
   habitoCheck: { width: 30, height: 30, borderRadius: radii.full, borderWidth: 2, borderColor: colors.border, alignItems: 'center', justifyContent: 'center' },
   habitoCheckFeito: { backgroundColor: colors.success, borderColor: colors.success },
+  // Tipo de hábito
+  tipoHabitoRow: { flexDirection: 'row', gap: spacing.sm, marginBottom: spacing.md },
+  tipoHabitoOpcao: { flex: 1, padding: spacing.md, borderRadius: radii.md, borderWidth: 1, borderColor: colors.border, alignItems: 'center', gap: spacing.xs },
+  tipoHabitoAtivo: { borderColor: colors.primary, backgroundColor: colors.primaryLight },
+  tipoHabitoIcone: { fontSize: 24 },
+  tipoHabitoTexto: { fontSize: 13, fontWeight: '600', color: colors.textSecondary },
+  tipoHabitoTextoAtivo: { color: colors.primaryDark },
+  tipoHabitoDesc: { fontSize: 11, color: colors.textMuted, textAlign: 'center' },
+
+  // Campos do contador
+  contadorCampos: { marginBottom: spacing.sm },
+  contadorRow: { flexDirection: 'row', gap: spacing.sm },
+  contadorCampo: { flex: 1 },
+  unidadesSugeridas: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.xs, marginBottom: spacing.md },
+  unidadePilula: { paddingHorizontal: spacing.sm, paddingVertical: spacing.xs, borderRadius: radii.full, borderWidth: 1, borderColor: colors.border },
+  unidadePilulaAtiva: { backgroundColor: colors.primary, borderColor: colors.primary },
+  unidadeTexto: { fontSize: 12, fontWeight: '500', color: colors.textSecondary },
+  unidadeTextoAtivo: { color: 'white' },
+
+  // Card contador
+  habitoBarraFundo: { height: 4, backgroundColor: colors.border, borderRadius: radii.full, overflow: 'hidden', marginTop: 4 },
+  habitoBarraPreenchida: { height: 4, backgroundColor: colors.primary, borderRadius: radii.full },
+  contadorAcoes: { flexDirection: 'row', alignItems: 'center', gap: spacing.xs },
+  contadorBtn: { width: 32, height: 32, borderRadius: radii.full, borderWidth: 1, borderColor: colors.border, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.background },
+  contadorBtnPlus: { backgroundColor: colors.primary, borderColor: colors.primary },
+  contadorBtnDesabilitado: { opacity: 0.3 },
+  contadorBtnTexto: { fontSize: 18, fontWeight: '600', color: colors.textPrimary, lineHeight: 22 },
+  contadorValor: { fontSize: 15, fontWeight: '700', color: colors.textPrimary, minWidth: 24, textAlign: 'center' },
   checkmark: { color: 'white', fontSize: 16, fontWeight: '700' },
   checkmarkVazio: { color: colors.textMuted, fontSize: 16 },
   cardMed: { backgroundColor: colors.surface, borderRadius: radii.lg, marginHorizontal: spacing.md, marginBottom: spacing.md, padding: spacing.md, borderWidth: 1, borderColor: colors.border },
