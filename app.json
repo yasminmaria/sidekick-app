@@ -7,6 +7,14 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
+    "plugins": [
+  [
+    "expo-notifications",
+    {
+      "icon": "./assets/icon.png",
+      "color": "#7F77DD"
+    }]],
+
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",

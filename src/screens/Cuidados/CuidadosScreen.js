@@ -3,6 +3,10 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { useState } from 'react'
 import { useAppStore } from '../../store/useAppStore'
 import { colors, spacing, radii, typography } from '../../theme'
+import { Header } from '../../components/ui/Header'
+import PerfilScreen from '../Perfil/PerfilScreen'
+import { useNavigation } from '@react-navigation/native'
+
 
 const TIPOS = [
   { valor: 'comprimido', label: '💊 Comprimido' },
@@ -64,7 +68,8 @@ export default function CuidadosScreen() {
   const [novoMed, setNovoMed] = useState(estadoInicialMed())
   const [medEditando, setMedEditando] = useState(null)
   const [novoHorario, setNovoHorario] = useState('')
-
+  const [perfilVisivel, setPerfilVisivel] = useState(false)
+  const [chatVisivel, setChatVisivel] = useState(false)
   const habitosFeitos = habitos.filter(h => h.concluidoHoje).length
 
   function salvarHabito() {
@@ -150,6 +155,17 @@ export default function CuidadosScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* HEADER GLOBAL */}
+                     <Header onAvatarPress={() => setPerfilVisivel(true)} />
+               
+                     <Modal
+                       visible={perfilVisivel}
+                       animationType="slide"
+                       onRequestClose={() => setPerfilVisivel(false)}
+                     >
+                       <PerfilScreen onFechar={() => setPerfilVisivel(false)} />
+                     </Modal>
+
       <ScrollView contentContainerStyle={styles.scroll}>
         <Text style={styles.titulo}>Cuidados</Text>
 
@@ -346,29 +362,118 @@ export default function CuidadosScreen() {
       </TouchableOpacity>
 
       <Modal visible={modalHabito} transparent animationType="slide" onRequestClose={() => setModalHabito(false)}>
-        <View style={styles.modalFundo}>
-          <View style={styles.modalContainer}>
-            <Text style={styles.modalTitulo}>Novo hábito</Text>
-            <Text style={styles.inputLabel}>Emoji</Text>
-            <View style={styles.emojiRow}>
-              {['💧', '🏃', '🧘', '📚', '🥗', '😴', '💊', '✍️'].map(e => (
-                <TouchableOpacity key={e} style={[styles.emojiOpcao, novoHabito.emoji === e && styles.emojiSelecionado]} onPress={() => setNovoHabito({ ...novoHabito, emoji: e })}>
-                  <Text style={{ fontSize: 22 }}>{e}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-            <Text style={styles.inputLabel}>Nome do hábito</Text>
-            <TextInput style={styles.input} placeholder="Ex: Beber 2L de água" placeholderTextColor={colors.textMuted} value={novoHabito.titulo} onChangeText={t => setNovoHabito({ ...novoHabito, titulo: t })} />
-            <View style={styles.modalBotoes}>
-              <TouchableOpacity style={styles.botaoCancelar} onPress={() => setModalHabito(false)}>
-                <Text style={styles.botaoCancelarTexto}>Cancelar</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.botaoSalvar} onPress={salvarHabito}>
-                <Text style={styles.botaoSalvarTexto}>Criar</Text>
-              </TouchableOpacity>
-            </View>
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
+          <View style={styles.modalFundo}>
+            <ScrollView contentContainerStyle={styles.modalScroll}>
+              <View style={styles.modalContainer}>
+                <Text style={styles.modalTitulo}>Novo hábito</Text>
+
+                {/* EMOJI */}
+                <Text style={styles.inputLabel}>Emoji</Text>
+                <View style={styles.emojiRow}>
+                  {['💧', '🏃', '🧘', '📚', '🥗', '😴', '💊', '✍️', '🏋️', '🚴'].map(e => (
+                    <TouchableOpacity
+                      key={e}
+                      style={[styles.emojiOpcao, novoHabito.emoji === e && styles.emojiSelecionado]}
+                      onPress={() => setNovoHabito({ ...novoHabito, emoji: e })}
+                    >
+                      <Text style={{ fontSize: 22 }}>{e}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+
+                {/* NOME */}
+                <Text style={styles.inputLabel}>Nome do hábito</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Ex: Beber água"
+                  placeholderTextColor={colors.textMuted}
+                  value={novoHabito.titulo}
+                  onChangeText={t => setNovoHabito({ ...novoHabito, titulo: t })}
+                  autoFocus
+                />
+
+                {/* TIPO */}
+                <Text style={styles.inputLabel}>Tipo</Text>
+                <View style={styles.tipoHabitoRow}>
+                  <TouchableOpacity
+                    style={[styles.tipoHabitoOpcao, novoHabito.tipo === 'simples' && styles.tipoHabitoAtivo]}
+                    onPress={() => setNovoHabito({ ...novoHabito, tipo: 'simples' })}
+                  >
+                    <Text style={styles.tipoHabitoIcone}>✅</Text>
+                    <Text style={[styles.tipoHabitoTexto, novoHabito.tipo === 'simples' && styles.tipoHabitoTextoAtivo]}>
+                      Simples
+                    </Text>
+                    <Text style={styles.tipoHabitoDesc}>Feito ou não feito</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.tipoHabitoOpcao, novoHabito.tipo === 'contador' && styles.tipoHabitoAtivo]}
+                    onPress={() => setNovoHabito({ ...novoHabito, tipo: 'contador' })}
+                  >
+                    <Text style={styles.tipoHabitoIcone}>🔢</Text>
+                    <Text style={[styles.tipoHabitoTexto, novoHabito.tipo === 'contador' && styles.tipoHabitoTextoAtivo]}>
+                      Contador
+                    </Text>
+                    <Text style={styles.tipoHabitoDesc}>Acompanha quantidade</Text>
+                  </TouchableOpacity>
+                </View>
+
+                {/* CAMPOS DO CONTADOR */}
+                {novoHabito.tipo === 'contador' && (
+                  <View style={styles.contadorCampos}>
+                    <View style={styles.contadorRow}>
+                      <View style={styles.contadorCampo}>
+                        <Text style={styles.inputLabel}>Meta diária</Text>
+                        <TextInput
+                          style={styles.input}
+                          keyboardType="numeric"
+                          placeholder="Ex: 8"
+                          placeholderTextColor={colors.textMuted}
+                          value={novoHabito.meta}
+                          onChangeText={t => setNovoHabito({ ...novoHabito, meta: t })}
+                        />
+                      </View>
+                      <View style={styles.contadorCampo}>
+                        <Text style={styles.inputLabel}>Unidade</Text>
+                        <TextInput
+                          style={styles.input}
+                          placeholder="Ex: copos, km, h"
+                          placeholderTextColor={colors.textMuted}
+                          value={novoHabito.unidade}
+                          onChangeText={t => setNovoHabito({ ...novoHabito, unidade: t })}
+                        />
+                      </View>
+                    </View>
+
+                    {/* Sugestões de unidade */}
+                    <View style={styles.unidadesSugeridas}>
+                      {['copos', 'km', 'min', 'horas', 'páginas', 'vezes'].map(u => (
+                        <TouchableOpacity
+                          key={u}
+                          style={[styles.unidadePilula, novoHabito.unidade === u && styles.unidadePilulaAtiva]}
+                          onPress={() => setNovoHabito({ ...novoHabito, unidade: u })}
+                        >
+                          <Text style={[styles.unidadeTexto, novoHabito.unidade === u && styles.unidadeTextoAtivo]}>
+                            {u}
+                          </Text>
+                        </TouchableOpacity>
+                      ))}
+                    </View>
+                  </View>
+                )}
+
+                <View style={styles.modalBotoes}>
+                  <TouchableOpacity style={styles.botaoCancelar} onPress={() => setModalHabito(false)}>
+                    <Text style={styles.botaoCancelarTexto}>Cancelar</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.botaoSalvar} onPress={salvarHabito}>
+                    <Text style={styles.botaoSalvarTexto}>Criar</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </ScrollView>
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </Modal>
 
       <Modal visible={modalMedicamento} transparent animationType="slide" onRequestClose={() => setModalMedicamento(false)}>

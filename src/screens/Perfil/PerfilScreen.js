@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Modal, KeyboardAvoidingView, Platform, TextInput, Alert } from 'react-native'
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Modal, KeyboardAvoidingView, Platform, TextInput, Alert, useEffect} from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useState } from 'react'
 import { useAppStore } from '../../store/useAppStore'
@@ -32,10 +32,26 @@ export default function PerfilScreen({ onFechar }) {
   }
 
   function confirmarReset() {
-    Alert.alert('Resetar tudo?', 'Isso apagará todos os seus dados. Esta ação não pode ser desfeita.', [
-      { text: 'Cancelar', style: 'cancel' },
-      { text: 'Resetar', style: 'destructive', onPress: () => resetarTudo() },
-    ])
+    Alert.alert(
+      'Resetar tudo?',
+      'Isso apagará todos os seus dados. O app será reiniciado.',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Resetar',
+          style: 'destructive',
+          onPress: async () => {
+            await resetarTudo()
+            // Força reload — em desenvolvimento reinicia o bundle
+            // Em produção o usuário precisará fechar e abrir o app
+            Alert.alert(
+              'Dados apagados',
+              'Feche e abra o app novamente para aplicar as alterações.'
+            )
+          }
+        },
+      ]
+    )
   }
 
   function conquistaDesbloqueada(c) {
@@ -160,15 +176,15 @@ export default function PerfilScreen({ onFechar }) {
 
 const styles = StyleSheet.create({
   headerFechar: {
-  flexDirection: 'row',
-  justifyContent: 'flex-end',
-  paddingHorizontal: spacing.md,
-  paddingTop: spacing.xxl,
-  paddingBottom: spacing.sm,
-  backgroundColor: colors.background,
-},
-fecharBtn: { padding: spacing.xs },
-fecharTexto: { color: colors.primary, fontWeight: '600', fontSize: 15 },
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    paddingHorizontal: spacing.md,
+    paddingTop: spacing.xxl,
+    paddingBottom: spacing.sm,
+    backgroundColor: colors.background,
+  },
+  fecharBtn: { padding: spacing.xs },
+  fecharTexto: { color: colors.primary, fontWeight: '600', fontSize: 15 },
   container: { flex: 1, backgroundColor: colors.background },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.lg, paddingHorizontal: spacing.md },
   scroll: { padding: spacing.md, paddingBottom: spacing.xxl },

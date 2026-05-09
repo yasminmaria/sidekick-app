@@ -6,6 +6,8 @@ import { colors, spacing, radii, typography } from '../../theme'
 import { sugerirTarefas } from '../../utils/api'
 import { segmentarTarefa } from '../../utils/api'
 import TarefaObjetivoCard from '../../components/TarefaObjetivoCard'
+import ChatModal from '../../components/ChatModal'
+import { Header } from '../../components/ui/Header'
 
 const LABEL_PRAZO = { curto: 'Curto prazo', medio: 'Médio prazo', longo: 'Longo prazo' }
 
@@ -28,7 +30,8 @@ export default function ObjetivoDetalheScreen({ route, navigation }) {
   const [subtarefasSelecionadas, setSubtarefasSelecionadas] = useState([])
   const [carregandoSegmentacao, setCarregandoSegmentacao] = useState(null)
   const [erroSegmentacao, setErroSegmentacao] = useState(null)
-
+  const [chatVisivel, setChatVisivel] = useState(false)
+  
   if (!objetivo) {
     navigation.goBack()
     return null
@@ -280,12 +283,12 @@ export default function ObjetivoDetalheScreen({ route, navigation }) {
         )}
       </ScrollView>
 
-          {/* FAB CHAT */}
-            <TouchableOpacity style={styles.fabChat} onPress={() => setChatVisivel(true)}>
-              <Text style={styles.fabChatTexto}>✨</Text>
-            </TouchableOpacity>
+      {/* FAB CHAT */}
+      <TouchableOpacity style={styles.fabChat} onPress={() => setChatVisivel(true)}>
+        <Text style={styles.fabChatTexto}>✨</Text>
+      </TouchableOpacity>
 
-      
+
       {/* MODAL DO CHAT */}
       <ChatModal visivel={chatVisivel} onFechar={() => setChatVisivel(false)} />
 
@@ -511,7 +514,7 @@ const styles = StyleSheet.create({
   progressoFundo: { height: 10, backgroundColor: colors.border, borderRadius: radii.full, overflow: 'hidden', marginBottom: spacing.xs },
   progressoPreenchido: { height: 10, borderRadius: radii.full },
   progressoTexto: { ...typography.caption, textAlign: 'right' },
- 
+
 
   // Botão IA
   botaoIA: { marginHorizontal: spacing.md, marginBottom: spacing.lg, padding: spacing.md, backgroundColor: colors.primaryLight, borderRadius: radii.lg, borderWidth: 1, borderColor: colors.primary, borderStyle: 'dashed' },

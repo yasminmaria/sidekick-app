@@ -1,13 +1,23 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useNavigation } from '@react-navigation/native'
 import { useAppStore } from '../../store/useAppStore'
 import { colors, spacing, radii, typography } from '../../theme'
 
 export function Header({ titulo, onVoltar, onAvatarPress }) {
   const { perfil } = useAppStore()
   const insets = useSafeAreaInsets()
+  const navigation = useNavigation()
 
-  // Modo tela interna — com botão de voltar e título
+  // Usa onAvatarPress se passado, senão navega para Perfil automaticamente
+  function handleAvatar() {
+    if (onAvatarPress) {
+      onAvatarPress()
+    } else {
+      navigation.navigate('Perfil')
+    }
+  }
+
   if (onVoltar) {
     return (
       <View style={[styles.container, { paddingTop: insets.top + spacing.sm }]}>
@@ -15,12 +25,15 @@ export function Header({ titulo, onVoltar, onAvatarPress }) {
           <Text style={styles.voltarTexto}>‹ Voltar</Text>
         </TouchableOpacity>
         <Text style={styles.tituloPagina}>{titulo}</Text>
-        <View style={styles.placeholder} />
+        <TouchableOpacity style={styles.avatarSmall} onPress={handleAvatar}>
+          <Text style={styles.avatarSmallTexto}>
+            {perfil.nome.substring(0, 2).toUpperCase()}
+          </Text>
+        </TouchableOpacity>
       </View>
     )
   }
 
-  // Modo home — saudação + avatar
   return (
     <View style={[styles.container, { paddingTop: insets.top + spacing.sm }]}>
       <View>
@@ -29,8 +42,8 @@ export function Header({ titulo, onVoltar, onAvatarPress }) {
       </View>
       <TouchableOpacity
         style={styles.avatar}
-        onPress={onAvatarPress}
-        activeOpacity={onAvatarPress ? 0.7 : 1}
+        onPress={handleAvatar}
+        activeOpacity={0.7}
       >
         <Text style={styles.avatarTexto}>
           {perfil.nome.substring(0, 2).toUpperCase()}
@@ -73,5 +86,13 @@ const styles = StyleSheet.create({
   voltarBtn: { padding: spacing.xs, minWidth: 80 },
   voltarTexto: { fontSize: 17, color: colors.primary, fontWeight: '500' },
   tituloPagina: { ...typography.h3 },
-  placeholder: { minWidth: 80 },
+  avatarSmall: {
+    width: 34,
+    height: 34,
+    borderRadius: radii.full,
+    backgroundColor: colors.primaryLight,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  avatarSmallTexto: { fontSize: 12, fontWeight: '600', color: colors.primaryDark },
 })

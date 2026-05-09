@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useAppStore } from '../../store/useAppStore'
 import { colors, spacing, radii, typography } from '../../theme'
 import { Header } from '../../components/ui/Header'
+import ChatModal from '../../components/ChatModal'
 
 function dataFormatada() {
   const agora = new Date()
@@ -149,9 +150,13 @@ export default function ObjetivosScreen({ navigation }) {
         )}
       </ScrollView>
 
+      {/* FAB CHAT */}
       <TouchableOpacity style={styles.fabChat} onPress={() => setChatVisivel(true)}>
         <Text style={styles.fabChatTexto}>✨</Text>
       </TouchableOpacity>
+
+      {/* CHAT */}
+      <ChatModal visivel={chatVisivel} onFechar={() => setChatVisivel(false)} />
 
       <Modal visible={modalNovoObjetivo} transparent animationType="slide" onRequestClose={() => setModalNovoObjetivo(false)}>
         <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>

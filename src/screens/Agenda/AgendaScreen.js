@@ -3,6 +3,8 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { useState } from 'react'
 import { useAppStore } from '../../store/useAppStore'
 import { colors, spacing, radii, typography } from '../../theme'
+import { Header } from '../../components/ui/Header'
+import PerfilScreen from '../Perfil/PerfilScreen'
 
 const DIAS_SEMANA = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
 const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']
@@ -43,7 +45,8 @@ export default function AgendaScreen() {
   const [dataSelecionada, setDataSelecionada] = useState(hoje)
   const [modalVisivel, setModalVisivel] = useState(false)
   const [novoEvento, setNovoEvento] = useState({ titulo: '', horario: '' })
-
+  const [perfilVisivel, setPerfilVisivel] = useState(false)
+  const [chatVisivel, setChatVisivel] = useState(false)
   const dias = gerarDiasDoMes(ano, mes)
 
   function mesAnterior() { if (mes === 0) { setMes(11); setAno(ano - 1) } else setMes(mes - 1) }
@@ -61,15 +64,16 @@ export default function AgendaScreen() {
   return (
     <SafeAreaView style={styles.container}>
 
-         <View style={styles.header}>
-                <View>
-                  <Text style={styles.saudacao}>Olá, {perfil.nome}! 👋</Text>
-                  <Text style={styles.data}>{dataFormatada()}</Text>
-                </View>
-                <View style={styles.avatar}>
-                  <Text style={styles.avatarTexto}>{perfil.nome.substring(0, 2).toUpperCase()}</Text>
-                </View>
-              </View>
+         {/* HEADER GLOBAL */}
+               <Header onAvatarPress={() => setPerfilVisivel(true)} />
+         
+               <Modal
+                 visible={perfilVisivel}
+                 animationType="slide"
+                 onRequestClose={() => setPerfilVisivel(false)}
+               >
+                 <PerfilScreen onFechar={() => setPerfilVisivel(false)} />
+               </Modal>
 
       <ScrollView contentContainerStyle={styles.scroll}>
         <Text style={styles.titulo}>Agenda</Text>
