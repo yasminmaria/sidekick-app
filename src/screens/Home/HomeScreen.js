@@ -15,6 +15,10 @@ const FREQUENCIAS = [
   { valor: 'diaria', label: '📅 Diária' },
   { valor: 'semanal', label: '📆 Semanal' },
   { valor: 'mensal', label: '🗓️ Mensal' },
+  { valor: 'anual', label: '📅 Anual' },
+  { valor: 'unica', label: '⏳ Única' },
+  { valor: 'personalizada', label: '⚙️ Personalizada' },
+
 ]
 
 const DIAS_SEMANA = [
@@ -86,7 +90,14 @@ export default function HomeScreen() {
   const [form, setForm] = useState(estadoInicial())
   const [chatVisivel, setChatVisivel] = useState(false)
   const [perfilVisivel, setPerfilVisivel] = useState(false)
-
+  const [tarefasCarregando, setTarefasCarregando] = useState(true)
+  const [perfilCarregando, setPerfilCarregando] = useState(true)
+  const [erro, setErro] = useState(null)
+  const [atualizando, setAtualizando] = useState(false)
+  const [atualizandoPerfil, setAtualizandoPerfil] = useState(false)
+  const [atualizandoTarefas, setAtualizandoTarefas] = useState(false)
+  const [filtro, setFiltro] = useState('todos')
+  
   // Pede permissão de notificação ao abrir o app
   useEffect(() => {
     pedirPermissaoNotificacoes()

@@ -8,6 +8,13 @@ export const useAppStore = create(
     (set, get) => ({
 
       // =========================
+      // ONBOARDING
+      // =========================
+      onboardingConcluido: false,
+
+      concluirOnboarding: () => set({ onboardingConcluido: true }),
+
+      // =========================
       // PERFIL
       // =========================
       perfil: {
@@ -27,58 +34,58 @@ export const useAppStore = create(
       // TAREFAS
       // =========================
       tarefas: [
-  { id: '1', titulo: 'Passear com o cachorro', xp: 20, moedas: 5, concluida: false, recompensada: false, repetitiva: true, frequencia: 'diaria', dias: ['seg', 'ter', 'qua', 'qui', 'sex'], prazoData: null, prazoHorario: null, lembrete: false, lembreteMinutos: 30, notificacaoId: null },
-  { id: '2', titulo: 'Tomar remédio', xp: 10, moedas: 2, concluida: false, recompensada: false, repetitiva: true, frequencia: 'diaria', dias: ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab'], prazoData: null, prazoHorario: null, lembrete: false, lembreteMinutos: 30, notificacaoId: null },
-  { id: '3', titulo: 'Estudar React Native', xp: 30, moedas: 10, concluida: false, recompensada: false, repetitiva: false, frequencia: null, dias: [], prazoData: null, prazoHorario: null, lembrete: false, lembreteMinutos: 30, notificacaoId: null },
-],
+        { id: '1', titulo: 'Passear com o cachorro', xp: 20, moedas: 5, concluida: false, recompensada: false, repetitiva: true, frequencia: 'diaria', dias: ['seg', 'ter', 'qua', 'qui', 'sex'], prazoData: null, prazoHorario: null, lembrete: false, lembreteMinutos: 30, notificacaoId: null },
+        { id: '2', titulo: 'Tomar remédio', xp: 10, moedas: 2, concluida: false, recompensada: false, repetitiva: true, frequencia: 'diaria', dias: ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab'], prazoData: null, prazoHorario: null, lembrete: false, lembreteMinutos: 30, notificacaoId: null },
+        { id: '3', titulo: 'Estudar React Native', xp: 30, moedas: 10, concluida: false, recompensada: false, repetitiva: false, frequencia: null, dias: [], prazoData: null, prazoHorario: null, lembrete: false, lembreteMinutos: 30, notificacaoId: null },
+      ],
 
       adicionarTarefa: async (tarefa) => {
-  const { tarefas } = get()
-  const novaTarefa = {
-    ...tarefa,
-    id: Date.now().toString(),
-    concluida: false,
-    recompensada: false,
-    notificacaoId: null,
-  }
+        const { tarefas } = get()
+        const novaTarefa = {
+          ...tarefa,
+          id: Date.now().toString(),
+          concluida: false,
+          recompensada: false,
+          notificacaoId: null,
+        }
 
-  // Agenda notificação se tiver lembrete
-  if (novaTarefa.lembrete && novaTarefa.prazoData) {
-    const notificacaoId = await agendarNotificacaoTarefa(novaTarefa)
-    novaTarefa.notificacaoId = notificacaoId
-  }
+        // Agenda notificação se tiver lembrete
+        if (novaTarefa.lembrete && novaTarefa.prazoData) {
+          const notificacaoId = await agendarNotificacaoTarefa(novaTarefa)
+          novaTarefa.notificacaoId = notificacaoId
+        }
 
-  set({ tarefas: [...tarefas, novaTarefa] })
-},
+        set({ tarefas: [...tarefas, novaTarefa] })
+      },
 
-editarTarefa: async (id, dados) => {
-  const { tarefas } = get()
-  const tarefaAtual = tarefas.find(t => t.id === id)
+      editarTarefa: async (id, dados) => {
+        const { tarefas } = get()
+        const tarefaAtual = tarefas.find(t => t.id === id)
 
-  // Cancela notificação antiga se existia
-  if (tarefaAtual?.notificacaoId) {
-    await cancelarNotificacao(tarefaAtual.notificacaoId)
-  }
+        // Cancela notificação antiga se existia
+        if (tarefaAtual?.notificacaoId) {
+          await cancelarNotificacao(tarefaAtual.notificacaoId)
+        }
 
-  const tarefaAtualizada = { ...tarefaAtual, ...dados, notificacaoId: null }
+        const tarefaAtualizada = { ...tarefaAtual, ...dados, notificacaoId: null }
 
-  // Agenda nova notificação se necessário
-  if (tarefaAtualizada.lembrete && tarefaAtualizada.prazoData) {
-    const notificacaoId = await agendarNotificacaoTarefa(tarefaAtualizada)
-    tarefaAtualizada.notificacaoId = notificacaoId
-  }
+        // Agenda nova notificação se necessário
+        if (tarefaAtualizada.lembrete && tarefaAtualizada.prazoData) {
+          const notificacaoId = await agendarNotificacaoTarefa(tarefaAtualizada)
+          tarefaAtualizada.notificacaoId = notificacaoId
+        }
 
-  set({ tarefas: tarefas.map(t => t.id === id ? tarefaAtualizada : t) })
-},
+        set({ tarefas: tarefas.map(t => t.id === id ? tarefaAtualizada : t) })
+      },
 
-deletarTarefa: async (id) => {
-  const { tarefas } = get()
-  const tarefa = tarefas.find(t => t.id === id)
-  if (tarefa?.notificacaoId) {
-    await cancelarNotificacao(tarefa.notificacaoId)
-  }
-  set({ tarefas: tarefas.filter(t => t.id !== id) })
-},
+      deletarTarefa: async (id) => {
+        const { tarefas } = get()
+        const tarefa = tarefas.find(t => t.id === id)
+        if (tarefa?.notificacaoId) {
+          await cancelarNotificacao(tarefa.notificacaoId)
+        }
+        set({ tarefas: tarefas.filter(t => t.id !== id) })
+      },
 
       concluirTarefa: (id) => {
         const { tarefas, ganharXP, ganharMoedas } = get()
