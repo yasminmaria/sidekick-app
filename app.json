@@ -8,13 +8,14 @@
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "plugins": [
-  [
-    "expo-notifications",
-    {
-      "icon": "./assets/icon.png",
-      "color": "#7F77DD"
-    }]],
-
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/icon.png",
+          "color": "#7F77DD"
+        }
+      ]
+    ],
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
@@ -28,7 +29,8 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.anonymous.sidekick"
     },
     "web": {
       "favicon": "./assets/favicon.png"

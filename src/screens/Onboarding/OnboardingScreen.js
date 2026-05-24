@@ -5,6 +5,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useRef, useState } from 'react'
 import { colors, spacing, radii, typography } from '../../theme'
+import { ScrollView } from 'react-native-gesture-handler'
 
 const { width, height } = Dimensions.get('window')
 
@@ -85,9 +86,9 @@ export default function OnboardingScreen({ onConcluir, onPular }) {
   const [indexAtual, setIndexAtual] = useState(0)
   const flatListRef = useRef(null)
   const scrollX = useRef(new Animated.Value(0)).current
-
-  const slideAtual = SLIDES[indexAtual]
   const isUltimo = indexAtual === SLIDES.length - 1
+  const slideAtual = SLIDES[indexAtual]
+
 
   function proximoSlide() {
     if (!isUltimo) {
@@ -153,6 +154,7 @@ export default function OnboardingScreen({ onConcluir, onPular }) {
 
       {/* SLIDES */}
       <Animated.FlatList
+        style={{ flex: 1 }}
         ref={flatListRef}
         data={SLIDES}
         keyExtractor={item => item.id}
@@ -166,7 +168,11 @@ export default function OnboardingScreen({ onConcluir, onPular }) {
           { useNativeDriver: false }
         )}
         renderItem={({ item }) => (
-          <View style={styles.slide}>
+          <ScrollView
+            style={{ width }}
+            contentContainerStyle={styles.slide}
+            showsVerticalScrollIndicator={false}
+          >
 
             {/* TAG */}
             <View style={[styles.tag, { backgroundColor: item.corLight }]}>
@@ -194,36 +200,45 @@ export default function OnboardingScreen({ onConcluir, onPular }) {
               ))}
             </View>
 
-          </View>
+          </ScrollView>
         )}
       />
 
-      {/* RODAPÉ FIXO — navegação */}
-      <View style={[styles.rodape, { borderTopColor: slideAtual.corLight }]}>
+      {/* RODAPÉ */}
+      <View
+        style={[
+          styles.rodape,
+          {
+            paddingTop: isUltimo ? spacing.md : 0,
+            borderTopWidth: isUltimo ? 1 : 0,
+            paddingBottom: isUltimo ? spacing.sm : spacing.md,
+          }
+        ]}
+      ></View>
 
-        {/* BOTÕES */}
-        <View style={styles.botoesRow}>
-          {indexAtual > 0 ? (
-            <TouchableOpacity style={styles.botaoVoltar} onPress={voltarSlide}>
-              <Text style={styles.botaoVoltarTexto}>← Voltar</Text>
-            </TouchableOpacity>
-          ) : (
-            <View style={{ flex: 1 }} />
-          )}
-
-          <TouchableOpacity
-            style={[styles.botaoProximo, { backgroundColor: slideAtual.cor }]}
-            onPress={proximoSlide}
-            activeOpacity={0.85}
-          >
-            <Text style={styles.botaoProximoTexto}>
-              {isUltimo ? 'Vamos começar! 🚀' : 'Próximo →'}
-            </Text>
+           {/* BOTÕES */}
+      <View style={styles.botoesRow}>
+        {indexAtual > 0 ? (
+          <TouchableOpacity style={styles.botaoVoltar} onPress={voltarSlide}>
+            <Text style={styles.botaoVoltarTexto}>← Voltar</Text>
           </TouchableOpacity>
-        </View>
+        ) : (
+          <View style={{ flex: 1 }} />
+        )}
 
+        <TouchableOpacity
+          style={[styles.botaoProximo, { backgroundColor: slideAtual.cor }]}
+          onPress={proximoSlide}
+          activeOpacity={0.85}
+        >
+          <Text style={styles.botaoProximoTexto}>
+            {isUltimo ? 'Vamos começar! 🚀' : 'Próximo →'}
+          </Text>
+        </TouchableOpacity>
       </View>
+
     </View>
+
   )
 }
 
@@ -334,14 +349,12 @@ const styles = StyleSheet.create({
   destaqueTexto: { ...typography.body, fontWeight: '600', flex: 1 },
 
   // Rodapé
-  rodape: {
-    paddingHorizontal: spacing.lg,
-    paddingBottom: spacing.sm,
-    paddingTop: spacing.md,
-    backgroundColor: colors.background,
-    borderTopWidth: 1,
-    gap: spacing.md,
-  },
+  // rodape: {
+  //   paddingHorizontal: spacing.lg,
+  //   paddingBottom: spacing.sm,
+  //   backgroundColor: colors.background,
+  //   borderTopColor: colors.border,
+  //  },
   dots: {
     flexDirection: 'row',
     justifyContent: 'center',
