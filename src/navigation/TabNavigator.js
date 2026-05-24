@@ -6,6 +6,10 @@ import AgendaScreen from '../screens/Agenda/AgendaScreen'
 import CuidadosScreen from '../screens/Cuidados/CuidadosScreen'
 import PerfilScreen from '../screens/Perfil/PerfilScreen'
 import ObjetivosNavigator from './ObjetivosNavigator'
+<<<<<<< HEAD
+=======
+import HumorScreen from '../screens/Humor/HumorScreen'
+>>>>>>> ajustes-ui
 
 const Tab = createBottomTabNavigator()
 
@@ -13,13 +17,22 @@ const icons = {
   Home: '🏠',
   Agenda: '📅',
   Objetivos: '🎯',
+<<<<<<< HEAD
   Cuidados: '💊',
   Perfil: '⚡',
+=======
+  Humor: '💭',
+  Cuidados: '💊',
+>>>>>>> ajustes-ui
 }
 
 export default function TabNavigator() {
   return (
     <Tab.Navigator
+<<<<<<< HEAD
+=======
+      initialRouteName="Home"
+>>>>>>> ajustes-ui
       screenOptions={({ route }) => ({
         headerShown: false,
         tabBarIcon: ({ focused }) => (
@@ -46,11 +59,28 @@ export default function TabNavigator() {
         },
       })}
     >
+<<<<<<< HEAD
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Agenda" component={AgendaScreen} />
       <Tab.Screen name="Objetivos" component={ObjetivosNavigator} />
       <Tab.Screen name="Cuidados" component={CuidadosScreen} />
       <Tab.Screen name="Perfil" component={PerfilScreen} />
+=======
+
+      <Tab.Screen name="Agenda" component={AgendaScreen} />
+      <Tab.Screen name="Objetivos" component={ObjetivosNavigator} />
+      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Cuidados" component={CuidadosScreen} />
+      <Tab.Screen name="Humor" component={HumorScreen} />
+      <Tab.Screen
+        name="Perfil"
+        component={PerfilScreen}
+        options={{
+          tabBarButton: () => null, // esconde da tab bar
+          tabBarItemStyle: { display: 'none' }, // esconde a tab bar na tela de perfil
+        }}
+      />
+>>>>>>> ajustes-ui
     </Tab.Navigator>
   )
 }

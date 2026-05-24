@@ -3,6 +3,16 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { useState } from 'react'
 import { useAppStore } from '../../store/useAppStore'
 import { colors, spacing, radii, typography } from '../../theme'
+<<<<<<< HEAD
+=======
+import { Header } from '../../components/ui/Header'
+import ChatModal from '../../components/ChatModal'
+
+function dataFormatada() {
+  const agora = new Date()
+  return agora.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })
+}
+>>>>>>> ajustes-ui
 
 const PRAZOS = [
   { valor: 'todos', label: 'Todos' },
@@ -23,6 +33,11 @@ export default function ObjetivosScreen({ navigation }) {
   const [modalNovaTarefa, setModalNovaTarefa] = useState(false)
   const [novoObjetivo, setNovoObjetivo] = useState({ titulo: '', prazo: 'curto' })
   const [novaTarefa, setNovaTarefa] = useState('')
+<<<<<<< HEAD
+=======
+  const [tarefaEditando, setTarefaEditando] = useState(null)
+  const [chatVisivel, setChatVisivel] = useState(false)
+>>>>>>> ajustes-ui
 
   const objetivosFiltrados = filtro === 'todos' ? objetivos : objetivos.filter(o => o.prazo === filtro)
 
@@ -40,11 +55,20 @@ export default function ObjetivosScreen({ navigation }) {
   function onLongPress(objetivo) {
     Alert.alert(objetivo.titulo, 'O que deseja fazer?', [
       { text: 'Editar', onPress: () => abrirEditar(objetivo) },
+<<<<<<< HEAD
       { text: 'Deletar', style: 'destructive', onPress: () =>
         Alert.alert('Deletar objetivo?', 'Todas as tarefas vinculadas serão removidas.', [
           { text: 'Cancelar', style: 'cancel' },
           { text: 'Deletar', style: 'destructive', onPress: () => deletarObjetivo(objetivo.id) },
         ])
+=======
+      {
+        text: 'Deletar', style: 'destructive', onPress: () =>
+          Alert.alert('Deletar objetivo?', 'Todas as tarefas vinculadas serão removidas.', [
+            { text: 'Cancelar', style: 'cancel' },
+            { text: 'Deletar', style: 'destructive', onPress: () => deletarObjetivo(objetivo.id) },
+          ])
+>>>>>>> ajustes-ui
       },
       { text: 'Cancelar', style: 'cancel' },
     ])
@@ -71,6 +95,10 @@ export default function ObjetivosScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
+<<<<<<< HEAD
+=======
+      <Header titulo="Objetivos" />
+>>>>>>> ajustes-ui
       <ScrollView contentContainerStyle={styles.scroll}>
         <Text style={styles.titulo}>Objetivos</Text>
 
@@ -139,10 +167,21 @@ export default function ObjetivosScreen({ navigation }) {
         )}
       </ScrollView>
 
+<<<<<<< HEAD
       <TouchableOpacity style={styles.fab} onPress={() => { setObjetivoEditando(null); setNovoObjetivo({ titulo: '', prazo: 'curto' }); setModalNovoObjetivo(true) }}>
         <Text style={styles.fabTexto}>+</Text>
       </TouchableOpacity>
 
+=======
+      {/* FAB CHAT */}
+      <TouchableOpacity style={styles.fabChat} onPress={() => setChatVisivel(true)}>
+        <Text style={styles.fabChatTexto}>✨</Text>
+      </TouchableOpacity>
+
+      {/* CHAT */}
+      <ChatModal visivel={chatVisivel} onFechar={() => setChatVisivel(false)} />
+
+>>>>>>> ajustes-ui
       <Modal visible={modalNovoObjetivo} transparent animationType="slide" onRequestClose={() => setModalNovoObjetivo(false)}>
         <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
           <View style={styles.modalFundo}>
@@ -151,6 +190,7 @@ export default function ObjetivosScreen({ navigation }) {
               <Text style={styles.inputLabel}>Título</Text>
               <TextInput style={styles.input} placeholder="Ex: Aprender a tocar guitarra" placeholderTextColor={colors.textMuted} value={novoObjetivo.titulo} onChangeText={t => setNovoObjetivo({ ...novoObjetivo, titulo: t })} autoFocus />
               <Text style={styles.inputLabel}>Prazo</Text>
+<<<<<<< HEAD
             <View style={styles.prazoSelector}>
               {['curto', 'medio', 'longo'].map(p => (
                 <TouchableOpacity key={p} style={[styles.prazoOpcao, novoObjetivo.prazo === p && { backgroundColor: COR_PRAZO[p], borderColor: COR_PRAZO[p] }]} onPress={() => setNovoObjetivo({ ...novoObjetivo, prazo: p })}>
@@ -168,6 +208,25 @@ export default function ObjetivosScreen({ navigation }) {
             </View>
           </View>
         </View>
+=======
+              <View style={styles.prazoSelector}>
+                {['curto', 'medio', 'longo'].map(p => (
+                  <TouchableOpacity key={p} style={[styles.prazoOpcao, novoObjetivo.prazo === p && { backgroundColor: COR_PRAZO[p], borderColor: COR_PRAZO[p] }]} onPress={() => setNovoObjetivo({ ...novoObjetivo, prazo: p })}>
+                    <Text style={[styles.prazoOpcaoTexto, novoObjetivo.prazo === p && { color: 'white' }]}>{LABEL_PRAZO[p]}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+              <View style={styles.modalBotoes}>
+                <TouchableOpacity style={styles.botaoCancelar} onPress={() => setModalNovoObjetivo(false)}>
+                  <Text style={styles.botaoCancelarTexto}>Cancelar</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.botaoSalvar} onPress={salvarObjetivo}>
+                  <Text style={styles.botaoSalvarTexto}>{objetivoEditando ? 'Salvar alterações' : 'Criar'}</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+>>>>>>> ajustes-ui
         </KeyboardAvoidingView>
       </Modal>
 
@@ -225,8 +284,15 @@ const styles = StyleSheet.create({
   vazio: { alignItems: 'center', paddingVertical: spacing.xxl },
   vazioTexto: { ...typography.body, color: colors.textMuted },
   vazioDica: { ...typography.caption, marginTop: spacing.xs, textAlign: 'center' },
+<<<<<<< HEAD
   fab: { position: 'absolute', bottom: 90, right: spacing.lg, width: 52, height: 52, borderRadius: radii.full, backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center', elevation: 6 },
   fabTexto: { color: 'white', fontSize: 28, fontWeight: '300', lineHeight: 32 },
+=======
+  fab: { position: 'absolute', bottom: 10, right: spacing.lg, width: 52, height: 52, borderRadius: radii.full, backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center', elevation: 6 },
+  fabTexto: { color: 'white', fontSize: 28, fontWeight: '300', lineHeight: 32 },
+  fabChat: { position: 'absolute', bottom: 10, right: spacing.lg, width: 52, height: 52, borderRadius: radii.full, backgroundColor: colors.primaryDark, alignItems: 'center', justifyContent: 'center', elevation: 6 },
+  fabChatTexto: { fontSize: 24 },
+>>>>>>> ajustes-ui
   modalFundo: { flex: 1, backgroundColor: 'rgba(0,0,0,0.4)', justifyContent: 'flex-end' },
   modalContainer: { backgroundColor: colors.surface, borderTopLeftRadius: radii.xl, borderTopRightRadius: radii.xl, padding: spacing.lg, paddingBottom: spacing.xxl },
   modalTitulo: { ...typography.h3, marginBottom: 4 },

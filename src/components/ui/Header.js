@@ -1,0 +1,98 @@
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useNavigation } from '@react-navigation/native'
+import { useAppStore } from '../../store/useAppStore'
+import { colors, spacing, radii, typography } from '../../theme'
+
+export function Header({ titulo, onVoltar, onAvatarPress }) {
+  const { perfil } = useAppStore()
+  const insets = useSafeAreaInsets()
+  const navigation = useNavigation()
+
+  // Usa onAvatarPress se passado, senão navega para Perfil automaticamente
+  function handleAvatar() {
+    if (onAvatarPress) {
+      onAvatarPress()
+    } else {
+      navigation.navigate('Perfil')
+    }
+  }
+
+  if (onVoltar) {
+    return (
+      <View style={[styles.container, { paddingTop: insets.top + spacing.sm }]}>
+        <TouchableOpacity style={styles.voltarBtn} onPress={onVoltar}>
+          <Text style={styles.voltarTexto}>‹ Voltar</Text>
+        </TouchableOpacity>
+        <Text style={styles.tituloPagina}>{titulo}</Text>
+        <TouchableOpacity style={styles.avatarSmall} onPress={handleAvatar}>
+          <Text style={styles.avatarSmallTexto}>
+            {perfil.nome.substring(0, 2).toUpperCase()}
+          </Text>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
+  return (
+    <View style={[styles.container, { paddingTop: insets.top + spacing.sm }]}>
+      <View>
+        <Text style={styles.saudacao}>Olá, {perfil.nome}! 👋</Text>
+        <Text style={styles.data}>{dataFormatada()}</Text>
+      </View>
+      <TouchableOpacity
+        style={styles.avatar}
+        onPress={handleAvatar}
+        activeOpacity={0.7}
+      >
+        <Text style={styles.avatarTexto}>
+          {perfil.nome.substring(0, 2).toUpperCase()}
+        </Text>
+      </TouchableOpacity>
+    </View>
+  )
+}
+
+function dataFormatada() {
+  return new Date().toLocaleDateString('pt-BR', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+  })
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: spacing.md,
+    paddingBottom: spacing.md,
+    backgroundColor: colors.background,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+  },
+  saudacao: { ...typography.h2 },
+  data: { ...typography.caption, marginTop: 2, textTransform: 'capitalize' },
+  avatar: {
+    width: 44,
+    height: 44,
+    borderRadius: radii.full,
+    backgroundColor: colors.primaryLight,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  avatarTexto: { fontSize: 15, fontWeight: '600', color: colors.primaryDark },
+  voltarBtn: { padding: spacing.xs, minWidth: 80 },
+  voltarTexto: { fontSize: 17, color: colors.primary, fontWeight: '500' },
+  tituloPagina: { ...typography.h3 },
+  avatarSmall: {
+    width: 34,
+    height: 34,
+    borderRadius: radii.full,
+    backgroundColor: colors.primaryLight,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  avatarSmallTexto: { fontSize: 12, fontWeight: '600', color: colors.primaryDark },
+})

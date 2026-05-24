@@ -3,6 +3,13 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { useState } from 'react'
 import { useAppStore } from '../../store/useAppStore'
 import { colors, spacing, radii, typography } from '../../theme'
+<<<<<<< HEAD
+=======
+import { Header } from '../../components/ui/Header'
+import PerfilScreen from '../Perfil/PerfilScreen'
+import { useNavigation } from '@react-navigation/native'
+
+>>>>>>> ajustes-ui
 
 const TIPOS = [
   { valor: 'comprimido', label: '💊 Comprimido' },
@@ -39,22 +46,62 @@ function estadoInicialMed() {
 }
 
 export default function CuidadosScreen() {
+<<<<<<< HEAD
   const { habitos, adicionarHabito, concluirHabito, medicamentos, adicionarMedicamento, editarMedicamento, deletarMedicamento, registrarDose } = useAppStore()
+=======
+  const {
+    habitos,
+    adicionarHabito,
+    concluirHabito,
+    incrementarHabito,
+    medicamentos,
+    adicionarMedicamento,
+    editarMedicamento,
+    deletarMedicamento,
+    registrarDose
+  } = useAppStore()
+>>>>>>> ajustes-ui
 
   const [abaAtiva, setAbaAtiva] = useState('habitos')
   const [modalHabito, setModalHabito] = useState(false)
   const [modalMedicamento, setModalMedicamento] = useState(false)
+<<<<<<< HEAD
   const [novoHabito, setNovoHabito] = useState({ titulo: '', emoji: '⭐' })
   const [novoMed, setNovoMed] = useState(estadoInicialMed())
   const [medEditando, setMedEditando] = useState(null)
   const [novoHorario, setNovoHorario] = useState('')
 
+=======
+  const [novoHabito, setNovoHabito] = useState({
+    titulo: '',
+    emoji: '⭐',
+    tipo: 'simples',
+    meta: '8',
+    unidade: 'vezes',
+  })
+  const [novoMed, setNovoMed] = useState(estadoInicialMed())
+  const [medEditando, setMedEditando] = useState(null)
+  const [novoHorario, setNovoHorario] = useState('')
+  const [perfilVisivel, setPerfilVisivel] = useState(false)
+  const [chatVisivel, setChatVisivel] = useState(false)
+>>>>>>> ajustes-ui
   const habitosFeitos = habitos.filter(h => h.concluidoHoje).length
 
   function salvarHabito() {
     if (!novoHabito.titulo.trim()) return
+<<<<<<< HEAD
     adicionarHabito(novoHabito)
     setNovoHabito({ titulo: '', emoji: '⭐' })
+=======
+    adicionarHabito({
+      titulo: novoHabito.titulo,
+      emoji: novoHabito.emoji,
+      tipo: novoHabito.tipo,
+      meta: novoHabito.tipo === 'contador' ? parseInt(novoHabito.meta) || 1 : null,
+      unidade: novoHabito.tipo === 'contador' ? novoHabito.unidade : null,
+    })
+    setNovoHabito({ titulo: '', emoji: '⭐', tipo: 'simples', meta: '8', unidade: 'vezes' })
+>>>>>>> ajustes-ui
     setModalHabito(false)
   }
 
@@ -74,11 +121,20 @@ export default function CuidadosScreen() {
   function onLongPressMed(med) {
     Alert.alert(med.nome, 'O que deseja fazer?', [
       { text: 'Editar', onPress: () => abrirEditarMed(med) },
+<<<<<<< HEAD
       { text: 'Deletar', style: 'destructive', onPress: () =>
         Alert.alert('Deletar medicamento?', `"${med.nome}" será removido.`, [
           { text: 'Cancelar', style: 'cancel' },
           { text: 'Deletar', style: 'destructive', onPress: () => deletarMedicamento(med.id) },
         ])
+=======
+      {
+        text: 'Deletar', style: 'destructive', onPress: () =>
+          Alert.alert('Deletar medicamento?', `"${med.nome}" será removido.`, [
+            { text: 'Cancelar', style: 'cancel' },
+            { text: 'Deletar', style: 'destructive', onPress: () => deletarMedicamento(med.id) },
+          ])
+>>>>>>> ajustes-ui
       },
       { text: 'Cancelar', style: 'cancel' },
     ])
@@ -127,6 +183,20 @@ export default function CuidadosScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
+<<<<<<< HEAD
+=======
+      {/* HEADER GLOBAL */}
+                     <Header onAvatarPress={() => setPerfilVisivel(true)} />
+               
+                     <Modal
+                       visible={perfilVisivel}
+                       animationType="slide"
+                       onRequestClose={() => setPerfilVisivel(false)}
+                     >
+                       <PerfilScreen onFechar={() => setPerfilVisivel(false)} />
+                     </Modal>
+
+>>>>>>> ajustes-ui
       <ScrollView contentContainerStyle={styles.scroll}>
         <Text style={styles.titulo}>Cuidados</Text>
 
@@ -141,6 +211,10 @@ export default function CuidadosScreen() {
 
         {abaAtiva === 'habitos' && (
           <View>
+<<<<<<< HEAD
+=======
+            {/* RESUMO */}
+>>>>>>> ajustes-ui
             <View style={styles.resumoCard}>
               <Text style={styles.resumoTitulo}>Progresso de hoje</Text>
               <View style={styles.resumoRow}>
@@ -179,6 +253,7 @@ export default function CuidadosScreen() {
                 <Text style={styles.vazioDica}>Crie hábitos para acompanhar seu dia</Text>
               </View>
             ) : (
+<<<<<<< HEAD
               habitos.map(habito => (
                 <TouchableOpacity key={habito.id} style={[styles.cardHabito, habito.concluidoHoje && styles.cardHabitoConcluido]} onPress={() => concluirHabito(habito.id)} activeOpacity={0.7}>
                   <View style={styles.habitoEmoji}>
@@ -196,6 +271,86 @@ export default function CuidadosScreen() {
             )}
           </View>
         )}
+=======
+              habitos.map(habito => {
+                // ... código dos cards que você já tem
+              })
+            )}
+          </View>
+        )}
+        {abaAtiva === 'habitos' && habitos.map(habito => {
+          const ehContador = habito.tipo === 'contador'
+          const porcentagem = ehContador && habito.meta
+            ? Math.min(Math.round((habito.progresso / habito.meta) * 100), 100)
+            : 0
+
+          return (
+            <View
+              key={habito.id}
+              style={[styles.cardHabito, habito.concluidoHoje && styles.cardHabitoConcluido]}
+            >
+              <View style={styles.habitoEmoji}>
+                <Text style={styles.habitoEmojiTexto}>{habito.emoji}</Text>
+              </View>
+
+              <View style={styles.habitoInfo}>
+                <Text style={[styles.habitoTitulo, habito.concluidoHoje && styles.habitoConcluido]}>
+                  {habito.titulo}
+                </Text>
+
+                {ehContador ? (
+                  <View>
+                    <Text style={styles.habitoStreak}>
+                      {habito.progresso}/{habito.meta} {habito.unidade} · 🔥 {habito.streak} dias
+                    </Text>
+                    {/* Barra de progresso */}
+                    <View style={styles.habitoBarraFundo}>
+                      <View style={[
+                        styles.habitoBarraPreenchida,
+                        { width: `${porcentagem}%` },
+                        habito.concluidoHoje && { backgroundColor: colors.success }
+                      ]} />
+                    </View>
+                  </View>
+                ) : (
+                  <Text style={styles.habitoStreak}>🔥 {habito.streak} dias seguidos</Text>
+                )}
+              </View>
+
+              {/* Ações */}
+              {ehContador ? (
+                <View style={styles.contadorAcoes}>
+                  <TouchableOpacity
+                    style={[styles.contadorBtn, habito.concluidoHoje && styles.contadorBtnDesabilitado]}
+                    onPress={() => !habito.concluidoHoje && incrementarHabito(habito.id, -1)}
+                  >
+                    <Text style={styles.contadorBtnTexto}>−</Text>
+                  </TouchableOpacity>
+                  <Text style={styles.contadorValor}>{habito.progresso}</Text>
+                  <TouchableOpacity
+                    style={[styles.contadorBtn, styles.contadorBtnPlus, habito.concluidoHoje && styles.contadorBtnDesabilitado]}
+                    onPress={() => !habito.concluidoHoje && incrementarHabito(habito.id, 1)}
+                  >
+                    <Text style={[styles.contadorBtnTexto, { color: 'white' }]}>+</Text>
+                  </TouchableOpacity>
+                </View>
+              ) : (
+                <TouchableOpacity
+                  style={[styles.habitoCheck, habito.concluidoHoje && styles.habitoCheckFeito]}
+                  onPress={() => concluirHabito(habito.id)}
+                >
+                  {habito.concluidoHoje
+                    ? <Text style={styles.checkmark}>✓</Text>
+                    : <Text style={styles.checkmarkVazio}>○</Text>
+                  }
+                </TouchableOpacity>
+              )}
+            </View>
+          )
+        })
+        }
+
+>>>>>>> ajustes-ui
 
         {abaAtiva === 'medicamentos' && (
           <View>
@@ -261,6 +416,7 @@ export default function CuidadosScreen() {
       </TouchableOpacity>
 
       <Modal visible={modalHabito} transparent animationType="slide" onRequestClose={() => setModalHabito(false)}>
+<<<<<<< HEAD
         <View style={styles.modalFundo}>
           <View style={styles.modalContainer}>
             <Text style={styles.modalTitulo}>Novo hábito</Text>
@@ -284,6 +440,120 @@ export default function CuidadosScreen() {
             </View>
           </View>
         </View>
+=======
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
+          <View style={styles.modalFundo}>
+            <ScrollView contentContainerStyle={styles.modalScroll}>
+              <View style={styles.modalContainer}>
+                <Text style={styles.modalTitulo}>Novo hábito</Text>
+
+                {/* EMOJI */}
+                <Text style={styles.inputLabel}>Emoji</Text>
+                <View style={styles.emojiRow}>
+                  {['💧', '🏃', '🧘', '📚', '🥗', '😴', '💊', '✍️', '🏋️', '🚴'].map(e => (
+                    <TouchableOpacity
+                      key={e}
+                      style={[styles.emojiOpcao, novoHabito.emoji === e && styles.emojiSelecionado]}
+                      onPress={() => setNovoHabito({ ...novoHabito, emoji: e })}
+                    >
+                      <Text style={{ fontSize: 22 }}>{e}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+
+                {/* NOME */}
+                <Text style={styles.inputLabel}>Nome do hábito</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Ex: Beber água"
+                  placeholderTextColor={colors.textMuted}
+                  value={novoHabito.titulo}
+                  onChangeText={t => setNovoHabito({ ...novoHabito, titulo: t })}
+                  autoFocus
+                />
+
+                {/* TIPO */}
+                <Text style={styles.inputLabel}>Tipo</Text>
+                <View style={styles.tipoHabitoRow}>
+                  <TouchableOpacity
+                    style={[styles.tipoHabitoOpcao, novoHabito.tipo === 'simples' && styles.tipoHabitoAtivo]}
+                    onPress={() => setNovoHabito({ ...novoHabito, tipo: 'simples' })}
+                  >
+                    <Text style={styles.tipoHabitoIcone}>✅</Text>
+                    <Text style={[styles.tipoHabitoTexto, novoHabito.tipo === 'simples' && styles.tipoHabitoTextoAtivo]}>
+                      Simples
+                    </Text>
+                    <Text style={styles.tipoHabitoDesc}>Feito ou não feito</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.tipoHabitoOpcao, novoHabito.tipo === 'contador' && styles.tipoHabitoAtivo]}
+                    onPress={() => setNovoHabito({ ...novoHabito, tipo: 'contador' })}
+                  >
+                    <Text style={styles.tipoHabitoIcone}>🔢</Text>
+                    <Text style={[styles.tipoHabitoTexto, novoHabito.tipo === 'contador' && styles.tipoHabitoTextoAtivo]}>
+                      Contador
+                    </Text>
+                    <Text style={styles.tipoHabitoDesc}>Acompanha quantidade</Text>
+                  </TouchableOpacity>
+                </View>
+
+                {/* CAMPOS DO CONTADOR */}
+                {novoHabito.tipo === 'contador' && (
+                  <View style={styles.contadorCampos}>
+                    <View style={styles.contadorRow}>
+                      <View style={styles.contadorCampo}>
+                        <Text style={styles.inputLabel}>Meta diária</Text>
+                        <TextInput
+                          style={styles.input}
+                          keyboardType="numeric"
+                          placeholder="Ex: 8"
+                          placeholderTextColor={colors.textMuted}
+                          value={novoHabito.meta}
+                          onChangeText={t => setNovoHabito({ ...novoHabito, meta: t })}
+                        />
+                      </View>
+                      <View style={styles.contadorCampo}>
+                        <Text style={styles.inputLabel}>Unidade</Text>
+                        <TextInput
+                          style={styles.input}
+                          placeholder="Ex: copos, km, h"
+                          placeholderTextColor={colors.textMuted}
+                          value={novoHabito.unidade}
+                          onChangeText={t => setNovoHabito({ ...novoHabito, unidade: t })}
+                        />
+                      </View>
+                    </View>
+
+                    {/* Sugestões de unidade */}
+                    <View style={styles.unidadesSugeridas}>
+                      {['copos', 'km', 'min', 'horas', 'páginas', 'vezes'].map(u => (
+                        <TouchableOpacity
+                          key={u}
+                          style={[styles.unidadePilula, novoHabito.unidade === u && styles.unidadePilulaAtiva]}
+                          onPress={() => setNovoHabito({ ...novoHabito, unidade: u })}
+                        >
+                          <Text style={[styles.unidadeTexto, novoHabito.unidade === u && styles.unidadeTextoAtivo]}>
+                            {u}
+                          </Text>
+                        </TouchableOpacity>
+                      ))}
+                    </View>
+                  </View>
+                )}
+
+                <View style={styles.modalBotoes}>
+                  <TouchableOpacity style={styles.botaoCancelar} onPress={() => setModalHabito(false)}>
+                    <Text style={styles.botaoCancelarTexto}>Cancelar</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.botaoSalvar} onPress={salvarHabito}>
+                    <Text style={styles.botaoSalvarTexto}>Criar</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </ScrollView>
+          </View>
+        </KeyboardAvoidingView>
+>>>>>>> ajustes-ui
       </Modal>
 
       <Modal visible={modalMedicamento} transparent animationType="slide" onRequestClose={() => setModalMedicamento(false)}>
@@ -293,6 +563,7 @@ export default function CuidadosScreen() {
               <View style={styles.modalContainer}>
                 <Text style={styles.modalTitulo}>{medEditando ? 'Editar medicamento' : 'Novo medicamento'}</Text>
 
+<<<<<<< HEAD
               <Text style={styles.inputLabel}>Nome</Text>
               <TextInput style={styles.input} placeholder="Ex: Ritalina, Venvanse..." placeholderTextColor={colors.textMuted} value={novoMed.nome} onChangeText={t => setNovoMed({ ...novoMed, nome: t })} autoFocus />
 
@@ -401,6 +672,116 @@ export default function CuidadosScreen() {
           </ScrollView>
         </View>
       </KeyboardAvoidingView>
+=======
+                <Text style={styles.inputLabel}>Nome</Text>
+                <TextInput style={styles.input} placeholder="Ex: Ritalina, Venvanse..." placeholderTextColor={colors.textMuted} value={novoMed.nome} onChangeText={t => setNovoMed({ ...novoMed, nome: t })} autoFocus />
+
+                <Text style={styles.inputLabel}>Tipo</Text>
+                <View style={styles.tipoRow}>
+                  {TIPOS.map(t => (
+                    <TouchableOpacity key={t.valor} style={[styles.tipoOpcao, novoMed.tipo === t.valor && styles.tipoAtivo]} onPress={() => setNovoMed({ ...novoMed, tipo: t.valor })}>
+                      <Text style={[styles.tipoTexto, novoMed.tipo === t.valor && styles.tipoTextoAtivo]}>{t.label}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+
+                <Text style={styles.inputLabel}>Dosagem</Text>
+                <TextInput style={styles.input} placeholder="Ex: 18mg, 10ml" placeholderTextColor={colors.textMuted} value={novoMed.dosagem} onChangeText={t => setNovoMed({ ...novoMed, dosagem: t })} />
+
+                <Text style={styles.inputLabel}>Frequência</Text>
+                <View style={styles.frequenciaRow}>
+                  {FREQUENCIAS_MED.map(f => (
+                    <TouchableOpacity key={f.valor} style={[styles.frequenciaOpcao, novoMed.frequencia === f.valor && styles.frequenciaAtiva]} onPress={() => setNovoMed({ ...novoMed, frequencia: f.valor })}>
+                      <Text style={[styles.frequenciaTexto, novoMed.frequencia === f.valor && styles.frequenciaTextoAtivo]}>{f.label}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+
+                {novoMed.frequencia === 'semanal' && (
+                  <View style={styles.diasContainer}>
+                    <Text style={styles.inputLabel}>Dias da semana</Text>
+                    <View style={styles.diasRow}>
+                      {DIAS_SEMANA.map(dia => {
+                        const selecionado = novoMed.dias.includes(dia.valor)
+                        return (
+                          <TouchableOpacity key={dia.valor} style={[styles.diaBtn, selecionado && styles.diaBtnAtivo]} onPress={() => toggleDiaMed(dia.valor)}>
+                            <Text style={[styles.diaBtnTexto, selecionado && styles.diaBtnTextoAtivo]}>{dia.label}</Text>
+                          </TouchableOpacity>
+                        )
+                      })}
+                    </View>
+                  </View>
+                )}
+
+                {novoMed.frequencia !== 'quando_necessario' && (
+                  <View>
+                    <Text style={styles.inputLabel}>Horários</Text>
+                    <View style={styles.horariosSugeridos}>
+                      {HORARIOS_SUGERIDOS.map(h => {
+                        const selecionado = novoMed.horarios.includes(h)
+                        return (
+                          <TouchableOpacity key={h} style={[styles.horarioSugerido, selecionado && styles.horarioSugeridoAtivo]} onPress={() => toggleHorario(h)}>
+                            <Text style={[styles.horarioSugeridoTexto, selecionado && styles.horarioSugeridoTextoAtivo]}>{h}</Text>
+                          </TouchableOpacity>
+                        )
+                      })}
+                    </View>
+                    <View style={styles.horarioCustomRow}>
+                      <TextInput style={[styles.input, { flex: 1, marginBottom: 0 }]} placeholder="Outro horário (ex: 07:30)" placeholderTextColor={colors.textMuted} value={novoHorario} onChangeText={setNovoHorario} keyboardType="numeric" />
+                      <TouchableOpacity style={styles.horarioCustomBtn} onPress={adicionarHorarioCustom}>
+                        <Text style={styles.horarioCustomBtnTexto}>+</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                )}
+
+                <Text style={styles.inputLabel}>Duração do tratamento</Text>
+                <View style={styles.duracaoRow}>
+                  {[{ valor: 'continuo', label: '♾️ Uso contínuo' }, { valor: 'com_termino', label: '📅 Com término' }].map(d => (
+                    <TouchableOpacity key={d.valor} style={[styles.duracaoOpcao, novoMed.duracao === d.valor && styles.duracaoAtiva]} onPress={() => setNovoMed({ ...novoMed, duracao: d.valor })}>
+                      <Text style={[styles.duracaoTexto, novoMed.duracao === d.valor && styles.duracaoTextoAtivo]}>{d.label}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+
+                {novoMed.duracao === 'com_termino' && (
+                  <View>
+                    <Text style={styles.inputLabel}>Data de término</Text>
+                    <TextInput style={styles.input} placeholder="AAAA-MM-DD" placeholderTextColor={colors.textMuted} value={novoMed.dataTermino || ''} onChangeText={t => setNovoMed({ ...novoMed, dataTermino: t })} />
+                  </View>
+                )}
+
+                <Text style={styles.inputLabel}>Quantidade em estoque</Text>
+                <TextInput style={styles.input} placeholder="Ex: 30" placeholderTextColor={colors.textMuted} keyboardType="numeric" value={novoMed.quantidade} onChangeText={t => setNovoMed({ ...novoMed, quantidade: t })} />
+
+                <View style={styles.toggleRow}>
+                  <View>
+                    <Text style={styles.toggleLabel}>Avisar reposição</Text>
+                    <Text style={styles.toggleDesc}>Alerta quando o estoque estiver baixo</Text>
+                  </View>
+                  <Switch value={novoMed.avisarReposicao} onValueChange={v => setNovoMed({ ...novoMed, avisarReposicao: v })} trackColor={{ false: colors.border, true: colors.teal }} thumbColor="white" />
+                </View>
+
+                {novoMed.avisarReposicao && (
+                  <View>
+                    <Text style={styles.inputLabel}>Avisar quando restar</Text>
+                    <TextInput style={styles.input} placeholder="Ex: 10" placeholderTextColor={colors.textMuted} keyboardType="numeric" value={novoMed.quantidadeAviso} onChangeText={t => setNovoMed({ ...novoMed, quantidadeAviso: t })} />
+                  </View>
+                )}
+
+                <View style={styles.modalBotoes}>
+                  <TouchableOpacity style={styles.botaoCancelar} onPress={() => setModalMedicamento(false)}>
+                    <Text style={styles.botaoCancelarTexto}>Cancelar</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={[styles.botaoSalvar, { backgroundColor: colors.teal }, !novoMed.nome.trim() && styles.botaoSalvarDesabilitado]} onPress={salvarMedicamento}>
+                    <Text style={styles.botaoSalvarTexto}>{medEditando ? 'Salvar alterações' : 'Salvar'}</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </ScrollView>
+          </View>
+        </KeyboardAvoidingView>
+>>>>>>> ajustes-ui
       </Modal>
     </SafeAreaView>
   )
@@ -408,6 +789,15 @@ export default function CuidadosScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
+<<<<<<< HEAD
+=======
+  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.lg, paddingHorizontal: spacing.md },
+  saudacao: { ...typography.h2 },
+  data: { ...typography.caption, marginTop: 2, textTransform: 'capitalize' },
+  avatar: { width: 44, height: 44, borderRadius: radii.full, backgroundColor: colors.primaryLight, alignItems: 'center', justifyContent: 'center' },
+  avatarTexto: { fontSize: 15, fontWeight: '600', color: colors.primaryDark },
+
+>>>>>>> ajustes-ui
   scroll: { paddingBottom: 100 },
   titulo: { ...typography.h2, padding: spacing.md, paddingBottom: spacing.sm },
   abas: { flexDirection: 'row', marginHorizontal: spacing.md, marginBottom: spacing.md, backgroundColor: colors.surface, borderRadius: radii.lg, padding: 4, borderWidth: 1, borderColor: colors.border },
@@ -438,6 +828,37 @@ const styles = StyleSheet.create({
   habitoStreak: { ...typography.caption, marginTop: 2 },
   habitoCheck: { width: 30, height: 30, borderRadius: radii.full, borderWidth: 2, borderColor: colors.border, alignItems: 'center', justifyContent: 'center' },
   habitoCheckFeito: { backgroundColor: colors.success, borderColor: colors.success },
+<<<<<<< HEAD
+=======
+  // Tipo de hábito
+  tipoHabitoRow: { flexDirection: 'row', gap: spacing.sm, marginBottom: spacing.md },
+  tipoHabitoOpcao: { flex: 1, padding: spacing.md, borderRadius: radii.md, borderWidth: 1, borderColor: colors.border, alignItems: 'center', gap: spacing.xs },
+  tipoHabitoAtivo: { borderColor: colors.primary, backgroundColor: colors.primaryLight },
+  tipoHabitoIcone: { fontSize: 24 },
+  tipoHabitoTexto: { fontSize: 13, fontWeight: '600', color: colors.textSecondary },
+  tipoHabitoTextoAtivo: { color: colors.primaryDark },
+  tipoHabitoDesc: { fontSize: 11, color: colors.textMuted, textAlign: 'center' },
+
+  // Campos do contador
+  contadorCampos: { marginBottom: spacing.sm },
+  contadorRow: { flexDirection: 'row', gap: spacing.sm },
+  contadorCampo: { flex: 1 },
+  unidadesSugeridas: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.xs, marginBottom: spacing.md },
+  unidadePilula: { paddingHorizontal: spacing.sm, paddingVertical: spacing.xs, borderRadius: radii.full, borderWidth: 1, borderColor: colors.border },
+  unidadePilulaAtiva: { backgroundColor: colors.primary, borderColor: colors.primary },
+  unidadeTexto: { fontSize: 12, fontWeight: '500', color: colors.textSecondary },
+  unidadeTextoAtivo: { color: 'white' },
+
+  // Card contador
+  habitoBarraFundo: { height: 4, backgroundColor: colors.border, borderRadius: radii.full, overflow: 'hidden', marginTop: 4 },
+  habitoBarraPreenchida: { height: 4, backgroundColor: colors.primary, borderRadius: radii.full },
+  contadorAcoes: { flexDirection: 'row', alignItems: 'center', gap: spacing.xs },
+  contadorBtn: { width: 32, height: 32, borderRadius: radii.full, borderWidth: 1, borderColor: colors.border, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.background },
+  contadorBtnPlus: { backgroundColor: colors.primary, borderColor: colors.primary },
+  contadorBtnDesabilitado: { opacity: 0.3 },
+  contadorBtnTexto: { fontSize: 18, fontWeight: '600', color: colors.textPrimary, lineHeight: 22 },
+  contadorValor: { fontSize: 15, fontWeight: '700', color: colors.textPrimary, minWidth: 24, textAlign: 'center' },
+>>>>>>> ajustes-ui
   checkmark: { color: 'white', fontSize: 16, fontWeight: '700' },
   checkmarkVazio: { color: colors.textMuted, fontSize: 16 },
   cardMed: { backgroundColor: colors.surface, borderRadius: radii.lg, marginHorizontal: spacing.md, marginBottom: spacing.md, padding: spacing.md, borderWidth: 1, borderColor: colors.border },
@@ -462,7 +883,11 @@ const styles = StyleSheet.create({
   vazio: { alignItems: 'center', paddingVertical: spacing.xl },
   vazioTexto: { ...typography.body, color: colors.textMuted },
   vazioDica: { ...typography.caption, marginTop: spacing.xs },
+<<<<<<< HEAD
   fab: { position: 'absolute', bottom: 90, right: spacing.lg, width: 52, height: 52, borderRadius: radii.full, backgroundColor: colors.pink, alignItems: 'center', justifyContent: 'center', elevation: 6 },
+=======
+  fab: { position: 'absolute', bottom: 20, right: spacing.lg, width: 52, height: 52, borderRadius: radii.full, backgroundColor: colors.pink, alignItems: 'center', justifyContent: 'center', elevation: 6 },
+>>>>>>> ajustes-ui
   fabTexto: { color: 'white', fontSize: 28, fontWeight: '300', lineHeight: 32 },
   modalFundo: { flex: 1, backgroundColor: 'rgba(0,0,0,0.4)', justifyContent: 'flex-end' },
   modalScroll: { justifyContent: 'flex-end', flexGrow: 1 },

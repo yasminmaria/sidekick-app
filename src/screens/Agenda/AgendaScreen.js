@@ -1,11 +1,29 @@
+<<<<<<< HEAD
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Modal, KeyboardAvoidingView, Platform, TextInput, KeyboardAvoidingViewComponent } from 'react-native'
+=======
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Modal, KeyboardAvoidingView, Platform, TextInput, KeyboardAvoidingViewComponent} from 'react-native'
+>>>>>>> ajustes-ui
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useState } from 'react'
 import { useAppStore } from '../../store/useAppStore'
 import { colors, spacing, radii, typography } from '../../theme'
+<<<<<<< HEAD
 
 const DIAS_SEMANA = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
 const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']
+=======
+import { Header } from '../../components/ui/Header'
+import PerfilScreen from '../Perfil/PerfilScreen'
+
+const DIAS_SEMANA = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
+const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']
+const perfil = useAppStore.getState().perfil
+
+function dataFormatada() {
+  const agora = new Date()
+  return agora.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })
+}
+>>>>>>> ajustes-ui
 
 function gerarDiasDoMes(ano, mes) {
   const primeiroDia = new Date(ano, mes, 1).getDay()
@@ -37,7 +55,12 @@ export default function AgendaScreen() {
   const [dataSelecionada, setDataSelecionada] = useState(hoje)
   const [modalVisivel, setModalVisivel] = useState(false)
   const [novoEvento, setNovoEvento] = useState({ titulo: '', horario: '' })
+<<<<<<< HEAD
 
+=======
+  const [perfilVisivel, setPerfilVisivel] = useState(false)
+  const [chatVisivel, setChatVisivel] = useState(false)
+>>>>>>> ajustes-ui
   const dias = gerarDiasDoMes(ano, mes)
 
   function mesAnterior() { if (mes === 0) { setMes(11); setAno(ano - 1) } else setMes(mes - 1) }
@@ -54,6 +77,21 @@ export default function AgendaScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
+<<<<<<< HEAD
+=======
+
+         {/* HEADER GLOBAL */}
+               <Header onAvatarPress={() => setPerfilVisivel(true)} />
+         
+               <Modal
+                 visible={perfilVisivel}
+                 animationType="slide"
+                 onRequestClose={() => setPerfilVisivel(false)}
+               >
+                 <PerfilScreen onFechar={() => setPerfilVisivel(false)} />
+               </Modal>
+
+>>>>>>> ajustes-ui
       <ScrollView contentContainerStyle={styles.scroll}>
         <Text style={styles.titulo}>Agenda</Text>
 
@@ -116,9 +154,16 @@ export default function AgendaScreen() {
         )}
       </ScrollView>
 
+<<<<<<< HEAD
       <TouchableOpacity style={styles.fab} onPress={() => setModalVisivel(true)}>
         <Text style={styles.fabTexto}>+</Text>
       </TouchableOpacity>
+=======
+      {/* FAB CHAT */}
+            <TouchableOpacity style={styles.fabChat} onPress={() => setChatVisivel(true)}>
+              <Text style={styles.fabChatTexto}>✨</Text>
+            </TouchableOpacity>
+>>>>>>> ajustes-ui
 
       <Modal visible={modalVisivel} transparent animationType="slide" onRequestClose={() => setModalVisivel(false)}>
         <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
@@ -148,6 +193,14 @@ export default function AgendaScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
+<<<<<<< HEAD
+=======
+  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.lg, paddingHorizontal: spacing.md },
+  saudacao: { ...typography.h2 },
+  data: { ...typography.caption, marginTop: 2, textTransform: 'capitalize' },
+  avatar: { width: 44, height: 44, borderRadius: radii.full, backgroundColor: colors.primaryLight, alignItems: 'center', justifyContent: 'center' },
+  avatarTexto: { fontSize: 15, fontWeight: '600', color: colors.primaryDark },
+>>>>>>> ajustes-ui
   scroll: { paddingBottom: 100 },
   titulo: { ...typography.h2, padding: spacing.md, paddingBottom: spacing.sm },
   calendario: { backgroundColor: colors.surface, borderRadius: radii.lg, marginHorizontal: spacing.md, marginBottom: spacing.md, padding: spacing.md, borderWidth: 1, borderColor: colors.border },
@@ -178,7 +231,11 @@ const styles = StyleSheet.create({
   vazio: { alignItems: 'center', paddingVertical: spacing.xxl },
   vazioTexto: { ...typography.body, color: colors.textMuted },
   vazioDica: { ...typography.caption, marginTop: spacing.xs },
+<<<<<<< HEAD
   fab: { position: 'absolute', bottom: 90, right: spacing.lg, width: 52, height: 52, borderRadius: radii.full, backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center', elevation: 6 },
+=======
+  fab: { position: 'absolute', bottom: 20, right: spacing.lg, width: 52, height: 52, borderRadius: radii.full, backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center', elevation: 6 },
+>>>>>>> ajustes-ui
   fabTexto: { color: 'white', fontSize: 28, fontWeight: '300', lineHeight: 32 },
   modalFundo: { flex: 1, backgroundColor: 'rgba(0,0,0,0.4)', justifyContent: 'flex-end' },
   modalContainer: { backgroundColor: colors.surface, borderTopLeftRadius: radii.xl, borderTopRightRadius: radii.xl, padding: spacing.lg, paddingBottom: spacing.xxl },

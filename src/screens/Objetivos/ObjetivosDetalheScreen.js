@@ -6,6 +6,11 @@ import { colors, spacing, radii, typography } from '../../theme'
 import { sugerirTarefas } from '../../utils/api'
 import { segmentarTarefa } from '../../utils/api'
 import TarefaObjetivoCard from '../../components/TarefaObjetivoCard'
+<<<<<<< HEAD
+=======
+import ChatModal from '../../components/ChatModal'
+import { Header } from '../../components/ui/Header'
+>>>>>>> ajustes-ui
 
 const LABEL_PRAZO = { curto: 'Curto prazo', medio: 'Médio prazo', longo: 'Longo prazo' }
 
@@ -28,7 +33,12 @@ export default function ObjetivoDetalheScreen({ route, navigation }) {
   const [subtarefasSelecionadas, setSubtarefasSelecionadas] = useState([])
   const [carregandoSegmentacao, setCarregandoSegmentacao] = useState(null)
   const [erroSegmentacao, setErroSegmentacao] = useState(null)
+<<<<<<< HEAD
 
+=======
+  const [chatVisivel, setChatVisivel] = useState(false)
+  
+>>>>>>> ajustes-ui
   if (!objetivo) {
     navigation.goBack()
     return null
@@ -132,6 +142,46 @@ export default function ObjetivoDetalheScreen({ route, navigation }) {
     setSubtarefasSelecionadas([])
   }
 
+<<<<<<< HEAD
+=======
+  async function iniciarSegmentacao(tarefa) {
+    setTarefaSegmentando(tarefa)
+    setCarregandoSegmentacao(tarefa.id)
+    setErroSegmentacao(null)
+    setSubtarefas([])
+    setSubtarefasSelecionadas([])
+    setModalSegmentacao(true)
+
+    try {
+      const resultado = await segmentarTarefa(tarefa.titulo, objetivo.titulo)
+      setSubtarefas(resultado)
+      setSubtarefasSelecionadas(resultado)
+    } catch (erro) {
+      setErroSegmentacao('Não foi possível segmentar a tarefa. Tente novamente.')
+    } finally {
+      setCarregandoSegmentacao(null)
+    }
+  }
+
+  function toggleSubtarefa(subtarefa) {
+    const jaSelecionada = subtarefasSelecionadas.includes(subtarefa)
+    setSubtarefasSelecionadas(jaSelecionada
+      ? subtarefasSelecionadas.filter(s => s !== subtarefa)
+      : [...subtarefasSelecionadas, subtarefa]
+    )
+  }
+
+  function adicionarSubtarefas() {
+    subtarefasSelecionadas.forEach(titulo => {
+      adicionarTarefaObjetivo(objetivo.id, titulo)
+    })
+    setModalSegmentacao(false)
+    setTarefaSegmentando(null)
+    setSubtarefas([])
+    setSubtarefasSelecionadas([])
+  }
+
+>>>>>>> ajustes-ui
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scroll}>
@@ -243,11 +293,23 @@ export default function ObjetivoDetalheScreen({ route, navigation }) {
         )}
       </ScrollView>
 
+<<<<<<< HEAD
       {/* FAB */}
       <TouchableOpacity style={[styles.fab, { backgroundColor: objetivo.cor }]} onPress={() => setModalTarefa(true)}>
         <Text style={styles.fabTexto}>+</Text>
       </TouchableOpacity>
 
+=======
+      {/* FAB CHAT */}
+      <TouchableOpacity style={styles.fabChat} onPress={() => setChatVisivel(true)}>
+        <Text style={styles.fabChatTexto}>✨</Text>
+      </TouchableOpacity>
+
+
+      {/* MODAL DO CHAT */}
+      <ChatModal visivel={chatVisivel} onFechar={() => setChatVisivel(false)} />
+
+>>>>>>> ajustes-ui
       {/* MODAL — NOVA TAREFA */}
       <Modal visible={modalTarefa} transparent animationType="slide" onRequestClose={() => setModalTarefa(false)}>
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
@@ -446,7 +508,19 @@ export default function ObjetivoDetalheScreen({ route, navigation }) {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
   scroll: { paddingBottom: 100 },
+<<<<<<< HEAD
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: spacing.md },
+=======
+  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.lg, paddingHorizontal: spacing.md },
+  saudacao: { ...typography.h2 },
+  data: { ...typography.caption, marginTop: 2, textTransform: 'capitalize' },
+  avatar: { width: 44, height: 44, borderRadius: radii.full, backgroundColor: colors.primaryLight, alignItems: 'center', justifyContent: 'center' },
+  avatarTexto: { fontSize: 15, fontWeight: '600', color: colors.primaryDark },
+  saudacao: { ...typography.h2 },
+  data: { ...typography.caption, marginTop: 2, textTransform: 'capitalize' },
+  avatar: { width: 44, height: 44, borderRadius: radii.full, backgroundColor: colors.primaryLight, alignItems: 'center', justifyContent: 'center' },
+  avatarTexto: { fontSize: 15, fontWeight: '600', color: colors.primaryDark },
+>>>>>>> ajustes-ui
   voltarBtn: { padding: spacing.xs },
   voltarTexto: { fontSize: 17, color: colors.primary, fontWeight: '500' },
   deletarTexto: { fontSize: 15, color: colors.coral, fontWeight: '500' },
@@ -463,6 +537,10 @@ const styles = StyleSheet.create({
   progressoPreenchido: { height: 10, borderRadius: radii.full },
   progressoTexto: { ...typography.caption, textAlign: 'right' },
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> ajustes-ui
   // Botão IA
   botaoIA: { marginHorizontal: spacing.md, marginBottom: spacing.lg, padding: spacing.md, backgroundColor: colors.primaryLight, borderRadius: radii.lg, borderWidth: 1, borderColor: colors.primary, borderStyle: 'dashed' },
   botaoIATexto: { fontSize: 15, fontWeight: '700', color: colors.primaryDark, marginBottom: 4 },
@@ -488,6 +566,11 @@ const styles = StyleSheet.create({
   vazioDica: { ...typography.caption, marginTop: spacing.xs, textAlign: 'center', paddingHorizontal: spacing.lg },
   fab: { position: 'absolute', bottom: 30, right: spacing.lg, width: 52, height: 52, borderRadius: radii.full, alignItems: 'center', justifyContent: 'center', elevation: 6 },
   fabTexto: { color: 'white', fontSize: 28, fontWeight: '300', lineHeight: 32 },
+<<<<<<< HEAD
+=======
+  fabChat: { position: 'absolute', bottom: 50, right: spacing.lg, width: 52, height: 52, borderRadius: radii.full, backgroundColor: colors.primaryDark, alignItems: 'center', justifyContent: 'center', elevation: 6 },
+  fabChatTexto: { fontSize: 24 },
+>>>>>>> ajustes-ui
 
   // Modais
   modalFundo: { flex: 1, backgroundColor: 'rgba(0,0,0,0.4)', justifyContent: 'flex-end' },
