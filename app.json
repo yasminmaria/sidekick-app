@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "sidekick",
+    "name": "Sidekick",
     "slug": "sidekick",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -19,21 +19,38 @@
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#F8F7FF"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.anonymous.sidekick",
+      "buildNumber": "1",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#F8F7FF"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.anonymous.sidekick"
+      "package": "com.yasmin.sidekick",
+      "versionCode": 1
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "373d9fdf-adee-4f63-85a7-8a9f6a7bfe39"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/373d9fdf-adee-4f63-85a7-8a9f6a7bfe39"
     }
   }
 }
