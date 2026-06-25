@@ -4,12 +4,14 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { useState } from 'react'
 import { useAppStore } from './src/store/useAppStore'
+import { ThemeProvider, useTheme } from './src/theme/ThemeContext'
 import TabNavigator from './src/navigation/TabNavigator'
 import OnboardingScreen from './src/screens/Onboarding/OnboardingScreen'
 import ConfiguracaoScreen from './src/screens/Onboarding/ConfiguracaoScreen'
 
-export default function App() {
+function AppInner() {
   const { onboardingConcluido, concluirOnboarding, alterarNome } = useAppStore()
+  const { isDark } = useTheme()
   const [etapaApp, setEtapaApp] = useState(
     onboardingConcluido ? 'app' : 'onboarding'
   )
@@ -33,7 +35,7 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <GestureHandlerRootView style={{ flex: 1 }}>
-        <StatusBar backgroundColor="transparent" style="light" translucent />
+        <StatusBar backgroundColor="transparent" style={isDark ? 'light' : 'dark'} translucent />
 
         {etapaApp === 'onboarding' && (
           <OnboardingScreen
@@ -56,5 +58,13 @@ export default function App() {
 
       </GestureHandlerRootView>
     </SafeAreaProvider>
+  )
+}
+
+export default function App() {
+  return (
+    <ThemeProvider>
+      <AppInner />
+    </ThemeProvider>
   )
 }

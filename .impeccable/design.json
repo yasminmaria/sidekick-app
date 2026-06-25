@@ -1,0 +1,160 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-06-23T02:20:00Z",
+  "title": "Design System: Sidekick",
+  "extensions": {
+    "colorMeta": {
+      "growth-green": { "role": "primary", "displayName": "Growth Green", "canonical": "#0F6E56", "tonalRamp": ["#04211A", "#073529", "#0A4D3C", "#0B6450", "#0F6E56", "#2E8C72", "#74B8A4", "#BFE0D5", "#E1F5EE"] },
+      "spring-green": { "role": "secondary", "displayName": "Spring Green", "canonical": "#17E375", "tonalRamp": ["#063D20", "#0A5C31", "#0F8347", "#13AB5C", "#17E375", "#54EB97", "#8CF2BC", "#BEF8D9", "#E6FDEF"] },
+      "teal-bright": { "role": "secondary", "displayName": "Teal Bright", "canonical": "#1D9E75", "tonalRamp": ["#072B20", "#0C4633", "#126A4D", "#188566", "#1D9E75", "#46B591", "#7ECBB1", "#B6E2D4", "#E1F5EE"] },
+      "energy-amber": { "role": "tertiary", "displayName": "Energy Amber", "canonical": "#EFA436", "tonalRamp": ["#3A2706", "#5E3F0B", "#8A5E12", "#B97D1A", "#D98A12", "#EFA436", "#F4BC6B", "#F8D4A0", "#FAEEDA"] },
+      "warmth-pink": { "role": "tertiary", "displayName": "Warmth Pink", "canonical": "#D4537E", "tonalRamp": ["#3A0F22", "#5E1A37", "#8A264F", "#B23866", "#D4537E", "#E07B9C", "#EBA3BB", "#F4CCD9", "#FBEAF0"] },
+      "momentum-coral": { "role": "tertiary", "displayName": "Momentum Coral", "canonical": "#D2733E", "tonalRamp": ["#3A1C0B", "#5E2F12", "#8A451B", "#B25A28", "#D2733E", "#DE9166", "#E8B190", "#F2D2BC", "#FBEADD"] },
+      "sage-canvas": { "role": "neutral", "displayName": "Sage Canvas", "canonical": "#F4F7F4", "tonalRamp": ["#0E1A16", "#15201B", "#2B362F", "#5C6A62", "#647067", "#A2ABA4", "#D4DAD5", "#EEF1EE", "#F4F7F4"] },
+      "forest-ink": { "role": "neutral", "displayName": "Forest Ink", "canonical": "#0E1A16", "tonalRamp": ["#0E1A16", "#15201B", "#222B26", "#3A453E", "#5C6A62", "#647067", "#A2ABA4", "#D4DAD5", "#F4F7F4"] },
+      "text-secondary": { "role": "neutral", "displayName": "Text Secondary", "canonical": "#5C6A62", "tonalRamp": ["#15201B", "#222B26", "#3A453E", "#4C574F", "#5C6A62", "#7A8780", "#9BA69E", "#C2CAC4", "#E8ECE9"] },
+      "text-muted": { "role": "neutral", "displayName": "Text Muted", "canonical": "#647067", "tonalRamp": ["#1A211D", "#2B362F", "#404B43", "#525C54", "#647067", "#828D85", "#A6AFA8", "#CBD1CC", "#EDEFEC"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Home greeting heading. One per screen; the page's name." },
+      "headline": { "displayName": "Headline", "purpose": "Screen titles (Cuidados, Minhas metas, Agenda date)." },
+      "title": { "displayName": "Title", "purpose": "Card headers, Foco title, goal names. The workhorse heading." },
+      "body": { "displayName": "Body", "purpose": "Task/habit names, input text, running copy." },
+      "label": { "displayName": "Label", "purpose": "Form labels, segment text, secondary buttons." },
+      "caption": { "displayName": "Caption", "purpose": "Counts, XP fractions, badge text, metadata." },
+      "eyebrow": { "displayName": "Eyebrow", "purpose": "Reserved uppercase accent: FOCO AGORA label and Agenda weekday only." }
+    },
+    "shadows": [
+      { "name": "card-lift", "value": "0 8px 18px rgba(14,26,22,0.08)", "purpose": "Perfil progress card and surfaces just above the canvas. Barely there." },
+      { "name": "hero-raise", "value": "0 16px 30px rgba(14,26,22,0.22)", "purpose": "Foco agora card and level-up toast. The single most-lifted element." },
+      { "name": "fab", "value": "0 4px 10px rgba(15,110,86,0.35)", "purpose": "The floating chat button above scroll content." }
+    ],
+    "motion": [
+      { "name": "ease-out", "value": "cubic-bezier(0.2, 0.8, 0.2, 1)", "purpose": "Default ease for state transitions and progress fills (150-250ms)." },
+      { "name": "spring-bubble", "value": "damping 22, stiffness 260", "purpose": "The tab-bar bubble sliding between tabs (reanimated withSpring)." },
+      { "name": "reward-pop", "value": "scale 1.0 -> 1.18 -> 1.0 over ~280ms", "purpose": "Checkbox/level-badge celebration pulse on completion." }
+    ],
+    "breakpoints": [
+      { "name": "mobile", "value": "390px (design width; single-column native app)" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Default filled action in forms and modal action rows.",
+      "html": "<button class=\"ds-btn-primary\">Criar tarefa</button>",
+      "css": ".ds-btn-primary{background:#0F6E56;color:#fff;font-size:15px;font-weight:700;border:none;border-radius:12px;padding:16px;width:100%;cursor:pointer;transition:background .18s cubic-bezier(.2,.8,.2,1)}.ds-btn-primary:hover{background:#0B6450}.ds-btn-primary:focus-visible{outline:2px solid #0F6E56;outline-offset:2px}.ds-btn-primary:active{background:#0B6450}"
+    },
+    {
+      "name": "Spring Hero Button",
+      "kind": "button",
+      "refersTo": "button-spring",
+      "description": "The reward call to action on the dark Foco card: bright green on near-black.",
+      "html": "<button class=\"ds-btn-spring\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#0E1A16\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M20 6.5 9.5 17 4.5 12\"/></svg>Concluir agora</button>",
+      "css": ".ds-btn-spring{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:#17E375;color:#0E1A16;font-size:15px;font-weight:800;border:none;border-radius:14px;padding:14px 18px;width:100%;cursor:pointer;transition:filter .18s cubic-bezier(.2,.8,.2,1)}.ds-btn-spring:hover{filter:brightness(1.05)}.ds-btn-spring:focus-visible{outline:2px solid #0F6E56;outline-offset:2px}.ds-btn-spring:active{filter:brightness(.96)}"
+    },
+    {
+      "name": "Dashed Add Button",
+      "kind": "button",
+      "refersTo": "button-dashed",
+      "description": "Lowest-weight create affordance: Nova meta, Novo hábito.",
+      "html": "<button class=\"ds-btn-dashed\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#0F6E56\" stroke-width=\"2.6\" stroke-linecap=\"round\"><path d=\"M12 5v14\"/><path d=\"M5 12h14\"/></svg>Nova meta</button>",
+      "css": ".ds-btn-dashed{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:#fff;color:#0F6E56;font-size:14px;font-weight:800;border:2px dashed #CBD4CC;border-radius:18px;padding:15px;width:100%;cursor:pointer;transition:border-color .18s,background .18s}.ds-btn-dashed:hover{background:#F4F7F4;border-color:#9FB3A8}.ds-btn-dashed:focus-visible{outline:2px solid #0F6E56;outline-offset:2px}"
+    },
+    {
+      "name": "Segmented Control",
+      "kind": "nav",
+      "refersTo": "segment-active",
+      "description": "In-screen mode switcher (Cuidados: Hábitos / Humor / Remédios).",
+      "html": "<div class=\"ds-seg\"><button class=\"ds-seg-item ds-seg-on\">Hábitos</button><button class=\"ds-seg-item\">Humor</button><button class=\"ds-seg-item\">Remédios</button></div>",
+      "css": ".ds-seg{display:flex;gap:4px;background:#EEF1EE;padding:4px;border-radius:14px}.ds-seg-item{flex:1;padding:10px 6px;border:none;background:transparent;color:#5C6A62;font-size:13px;font-weight:800;border-radius:11px;cursor:pointer;transition:color .18s}.ds-seg-item:hover{color:#0F6E56}.ds-seg-on{background:#fff;color:#0F6E56;box-shadow:0 2px 6px rgba(14,26,22,.08)}.ds-seg-item:focus-visible{outline:2px solid #0F6E56;outline-offset:1px}"
+    },
+    {
+      "name": "Task Tile",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "The recurring list row: tinted icon tile + title + tag-meta + completion check.",
+      "html": "<button class=\"ds-tile\"><span class=\"ds-tile-icon\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#0F6E56\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M22 12h-4l-3 8.5L9 3.5 6 12H2\"/></svg></span><span class=\"ds-tile-body\"><span class=\"ds-tile-title\">Passear com o cachorro</span><span class=\"ds-tile-meta\">Tarefa · Manhã</span></span><span class=\"ds-tile-check\"></span></button>",
+      "css": ".ds-tile{display:flex;align-items:center;gap:13px;background:#fff;border:1px solid #EBEEEB;border-radius:18px;padding:14px;width:100%;text-align:left;cursor:pointer;transition:border-color .18s,transform .12s}.ds-tile:hover{border-color:#BFE0D5}.ds-tile:active{transform:scale(.99)}.ds-tile:focus-visible{outline:2px solid #0F6E56;outline-offset:2px}.ds-tile-icon{display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:12px;background:#E1F5EE;flex:none}.ds-tile-body{display:flex;flex-direction:column;min-width:0;flex:1}.ds-tile-title{font-size:14.5px;font-weight:700;color:#15201B;letter-spacing:-.2px}.ds-tile-meta{font-size:12px;font-weight:500;color:#5C6A62;margin-top:2px}.ds-tile-check{width:26px;height:26px;border-radius:50%;border:2px solid #DCE2DD;flex:none}"
+    },
+    {
+      "name": "Count Pill",
+      "kind": "chip",
+      "refersTo": "badge-teal",
+      "description": "Status pill above lists (restantes, pendentes).",
+      "html": "<span class=\"ds-pill\">3 restantes</span>",
+      "css": ".ds-pill{display:inline-block;font-size:12px;font-weight:700;color:#0F6E56;background:#E1F5EE;padding:4px 10px;border-radius:999px}"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Form field that recedes into the surface, defined by its border.",
+      "html": "<input class=\"ds-input\" placeholder=\"Ex: Estudar por 30 minutos\" />",
+      "css": ".ds-input{width:100%;background:#F4F7F4;border:1px solid #EBEEEB;border-radius:12px;padding:16px;font-size:15px;color:#0E1A16;transition:border-color .18s}.ds-input::placeholder{color:#647067}.ds-input:focus{outline:none;border-color:#0F6E56}"
+    },
+    {
+      "name": "XP Header (signature)",
+      "kind": "custom",
+      "refersTo": "level-badge",
+      "description": "Green gradient header with translucent level card, badge, and XP gradient bar.",
+      "html": "<div class=\"ds-xp\"><div class=\"ds-xp-row\"><span class=\"ds-xp-left\"><span class=\"ds-xp-badge\">7</span><span class=\"ds-xp-name\">Árvore madura</span></span><span class=\"ds-xp-frac\">840/1000 XP</span></div><div class=\"ds-xp-track\"><span class=\"ds-xp-fill\"></span></div></div>",
+      "css": ".ds-xp{background:linear-gradient(180deg,#0F6E56,#14805F);border-radius:18px;padding:14px 16px}.ds-xp-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}.ds-xp-left{display:flex;align-items:center;gap:7px}.ds-xp-badge{display:flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:7px;background:#17E375;color:#0E1A16;font-size:12px;font-weight:800}.ds-xp-name{color:#fff;font-size:13px;font-weight:700}.ds-xp-frac{color:rgba(255,255,255,.82);font-size:12px;font-weight:600}.ds-xp-track{height:9px;border-radius:999px;background:rgba(255,255,255,.2);overflow:hidden}.ds-xp-fill{display:block;height:100%;width:84%;border-radius:999px;background:linear-gradient(90deg,#17E375,#9FE1CB)}"
+    },
+    {
+      "name": "Foco Card (signature)",
+      "kind": "custom",
+      "refersTo": "button-spring",
+      "description": "Dark gradient hero card surfacing the single next action.",
+      "html": "<div class=\"ds-foco\"><div class=\"ds-foco-top\"><span class=\"ds-foco-tile\"><svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#fff\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M22 12h-4l-3 8.5L9 3.5 6 12H2\"/></svg></span><span class=\"ds-foco-body\"><span class=\"ds-foco-title\">Passear com o cachorro</span><span class=\"ds-foco-meta\">Tarefa · Manhã</span></span><span class=\"ds-foco-xp\">+20</span></div><button class=\"ds-btn-spring2\">Concluir agora</button></div>",
+      "css": ".ds-foco{background:linear-gradient(135deg,#163A2E,#0E1A16);border-radius:24px;padding:20px;box-shadow:0 16px 30px rgba(14,26,22,.22)}.ds-foco-top{display:flex;align-items:center;gap:13px;margin-bottom:16px}.ds-foco-tile{display:flex;align-items:center;justify-content:center;width:46px;height:46px;border-radius:14px;background:rgba(255,255,255,.12);flex:none}.ds-foco-body{display:flex;flex-direction:column;min-width:0;flex:1}.ds-foco-title{color:#fff;font-size:17px;font-weight:800;letter-spacing:-.3px}.ds-foco-meta{color:rgba(255,255,255,.6);font-size:12.5px;font-weight:500;margin-top:3px}.ds-foco-xp{color:#5DE39B;background:rgba(23,227,117,.18);font-size:12px;font-weight:800;padding:5px 9px;border-radius:999px;flex:none}.ds-btn-spring2{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:#17E375;color:#0E1A16;font-size:15px;font-weight:800;border:none;border-radius:14px;padding:14px;cursor:pointer}.ds-btn-spring2:hover{filter:brightness(1.05)}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Growth Garden",
+    "overview": "Sidekick is built for minds that bloom at their own pace. The system is a garden rooted in deep forest greens, reaching toward the bright spring-green of new growth. Every screen is a well-tended plot: calm, legible, purposeful. Progress is always visible because plants don't hide their growth, and rewards feel earned because a bloom is evidence, not decoration. It rejects clinical distance, the children's-app reflex, and red-alert shaming. Depth is tonal by default; gradient and shadow are reserved for three deliberate hero moments: the green gradient headers, the dark hero cards, and the floating chat button.",
+    "keyCharacteristics": [
+      "Green is the identity: a single forest-green primary (#0F6E56) carries brand, action, and achievement",
+      "Tonal layering for the everyday surface; deliberate gradient + shadow only on hero moments",
+      "Warm accents (amber, pink, dark) mark territory now that green is the brand",
+      "System fonts tuned to heavy weight contrast (800 headings, 500 body); no decorative type",
+      "Line icons for UI chrome; emoji reserved for user-chosen habit/mood expression",
+      "Companion-toned: no punitive copy, no shame states, no red-alert patterns",
+      "Brazilian Portuguese throughout"
+    ],
+    "rules": [
+      { "name": "The One Green Rule", "body": "Growth Green (#0F6E56) is the brand and the only action color. It earns meaning by never being faked: a green element is interactive, branded, or achieved, never a decorative wash.", "section": "colors" },
+      { "name": "The Territory Rule", "body": "Now that green is the brand, domain is carried by the warm accents and the dark tile, not by green. Amber means reward/streaks; pink means mood; the dark tint marks deep-focus/hero; coral means danger. Don't use a warm accent outside its domain.", "section": "colors" },
+      { "name": "The Text-Contrast Floor Rule", "body": "Any color carrying words must clear WCAG AA against its surface. Text Secondary (#5C6A62) and Text Muted (#647067) are the floors; Decor Ash and Decor Ash Faint are prohibited as text. Muted gray on near-white is not acceptable.", "section": "colors" },
+      { "name": "The Weight-Contrast Rule", "body": "Hierarchy comes from weight (800 vs 500), not from a fluid type scale. Sizes are fixed px, not clamp().", "section": "typography" },
+      { "name": "The One-Eyebrow Rule", "body": "The uppercase tracked eyebrow appears on the Foco label and the Agenda weekday only. Never put a tracked all-caps kicker above every section.", "section": "typography" },
+      { "name": "The Flat-By-Default Rule", "body": "Resting cards, inputs, tiles, and buttons carry no shadow. Shadow is reserved for the three hero moments: headers, hero cards, FAB.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do use Sage Canvas (#F4F7F4) as the screen background, green-tinted toward the brand. Never a warmer or more neutral tint.",
+      "Do keep Growth Green (#0F6E56) as the one brand-and-action color; make every green element genuinely interactive, branded, or achieved.",
+      "Do carry territory with the warm accents: amber for reward/streaks, pink for mood, the dark tile for deep-focus/hero, coral for danger.",
+      "Do keep Text Secondary (#5C6A62) and Text Muted (#647067) as the floors for any text; verify 4.5:1 before shipping.",
+      "Do keep one dominant action per screen. The Foco card is the model.",
+      "Do reserve real shadow and gradient for the three hero moments; keep ordinary cards flat with a 1px border.",
+      "Do pair primary and secondary buttons in modal rows: secondary (outline) left, primary (filled) right.",
+      "Do use line icons for UI chrome and reserve emoji for user-chosen habit/mood expression.",
+      "Do write companion-toned copy for every empty, error, and past-due state."
+    ],
+    "donts": [
+      "Don't use warm-tinted backgrounds (cream, sand, paper, linen, ivory, parchment). The canvas is Sage Canvas, green-tinted.",
+      "Don't use clinical or cold palettes: no hospital-white sterility, no corporate blue-gray, no cold neutral surfaces.",
+      "Don't ship Duolingo-style shrieking colors, bouncy mascots, or children's-app aesthetics.",
+      "Don't design to Jira or Monday energy: dense grids, corporate blues, zero personality.",
+      "Don't create ultra-minimalist no-color checklist aesthetics. Empty states need copy and care.",
+      "Don't shame users for incomplete tasks. Past-due items are opportunities, not failures.",
+      "Don't put words in Decor Ash (#A2ABA4) or Decor Ash Faint (#B4BDB5); those are non-text tints only.",
+      "Don't add a shadow to a resting list card, input, or tile. Elevation belongs to the three hero moments only.",
+      "Don't apply border-left colored stripes as accents. Use full borders, background tints, or leading icon tiles.",
+      "Don't use gradient text. Gradients live on card surfaces and progress bars, never on type.",
+      "Don't use a tracked all-caps eyebrow above every section. It is reserved for the Foco label and the Agenda weekday."
+    ]
+  }
+}

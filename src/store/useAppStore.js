@@ -1,18 +1,13 @@
 import { create } from 'zustand'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { persist, createJSONStorage } from 'zustand/middleware'
-<<<<<<< HEAD
-=======
 import { agendarNotificacaoTarefa, cancelarNotificacao } from '../utils/notifications'
->>>>>>> ajustes-ui
 
 export const useAppStore = create(
   persist(
     (set, get) => ({
 
       // =========================
-<<<<<<< HEAD
-=======
       // ONBOARDING
       // =========================
       onboardingConcluido: false,
@@ -20,7 +15,6 @@ export const useAppStore = create(
       concluirOnboarding: () => set({ onboardingConcluido: true }),
 
       // =========================
->>>>>>> ajustes-ui
       // PERFIL
       // =========================
       perfil: {
@@ -40,25 +34,6 @@ export const useAppStore = create(
       // TAREFAS
       // =========================
       tarefas: [
-<<<<<<< HEAD
-        { id: '1', titulo: 'Passear com o cachorro', xp: 20, moedas: 5, concluida: false, recompensada: false, repetitiva: true, frequencia: 'diaria', dias: ['seg', 'ter', 'qua', 'qui', 'sex'] },
-        { id: '2', titulo: 'Tomar remédio', xp: 10, moedas: 2, concluida: false, recompensada: false, repetitiva: true, frequencia: 'diaria', dias: ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab'] },
-        { id: '3', titulo: 'Estudar React Native', xp: 30, moedas: 10, concluida: false, recompensada: false, repetitiva: false, frequencia: null, dias: [] },
-      ],
-
-      adicionarTarefa: (tarefa) => {
-        const { tarefas } = get()
-        set({ tarefas: [...tarefas, { ...tarefa, id: Date.now().toString(), concluida: false, recompensada: false }] })
-      },
-
-      editarTarefa: (id, dados) => {
-        const { tarefas } = get()
-        set({ tarefas: tarefas.map(t => t.id === id ? { ...t, ...dados } : t) })
-      },
-
-      deletarTarefa: (id) => {
-        const { tarefas } = get()
-=======
         { id: '1', titulo: 'Passear com o cachorro', xp: 20, moedas: 5, concluida: false, recompensada: false, repetitiva: true, frequencia: 'diaria', dias: ['seg', 'ter', 'qua', 'qui', 'sex'], prazoData: null, prazoHorario: null, lembrete: false, lembreteMinutos: 30, notificacaoId: null },
         { id: '2', titulo: 'Tomar remédio', xp: 10, moedas: 2, concluida: false, recompensada: false, repetitiva: true, frequencia: 'diaria', dias: ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab'], prazoData: null, prazoHorario: null, lembrete: false, lembreteMinutos: 30, notificacaoId: null },
         { id: '3', titulo: 'Estudar React Native', xp: 30, moedas: 10, concluida: false, recompensada: false, repetitiva: false, frequencia: null, dias: [], prazoData: null, prazoHorario: null, lembrete: false, lembreteMinutos: 30, notificacaoId: null },
@@ -109,7 +84,6 @@ export const useAppStore = create(
         if (tarefa?.notificacaoId) {
           await cancelarNotificacao(tarefa.notificacaoId)
         }
->>>>>>> ajustes-ui
         set({ tarefas: tarefas.filter(t => t.id !== id) })
       },
 
@@ -232,9 +206,6 @@ export const useAppStore = create(
         set({
           objetivos: objetivos.map(o =>
             o.id === objetivoId
-<<<<<<< HEAD
-              ? { ...o, tarefas: [...o.tarefas, { id: Date.now().toString(), titulo, concluida: false }] }
-=======
               ? {
                 ...o,
                 tarefas: [...o.tarefas, {
@@ -243,7 +214,6 @@ export const useAppStore = create(
                   concluida: false,
                 }]
               }
->>>>>>> ajustes-ui
               : o
           )
         })
@@ -266,16 +236,6 @@ export const useAppStore = create(
       // HÁBITOS
       // =========================
       habitos: [
-<<<<<<< HEAD
-        { id: 'h1', titulo: 'Beber água', emoji: '💧', streak: 3, concluidoHoje: false },
-        { id: 'h2', titulo: 'Meditar', emoji: '🧘', streak: 1, concluidoHoje: false },
-        { id: 'h3', titulo: 'Exercício', emoji: '🏃', streak: 0, concluidoHoje: false },
-      ],
-
-      adicionarHabito: (habito) => {
-        const { habitos } = get()
-        set({ habitos: [...habitos, { ...habito, id: Date.now().toString(), streak: 0, concluidoHoje: false }] })
-=======
         { id: 'h1', titulo: 'Beber água', emoji: '💧', streak: 3, concluidoHoje: false, tipo: 'contador', meta: 8, unidade: 'copos', progresso: 0 },
         { id: 'h2', titulo: 'Meditar', emoji: '🧘', streak: 1, concluidoHoje: false, tipo: 'simples', meta: null, unidade: null, progresso: 0 },
         { id: 'h3', titulo: 'Exercício', emoji: '🏃', streak: 0, concluidoHoje: false, tipo: 'simples', meta: null, unidade: null, progresso: 0 },
@@ -294,20 +254,11 @@ export const useAppStore = create(
             progresso: 0,
           }]
         })
->>>>>>> ajustes-ui
       },
 
       concluirHabito: (id) => {
         const { habitos, ganharXP, ganharMoedas } = get()
         const habito = habitos.find(h => h.id === id)
-<<<<<<< HEAD
-        if (!habito || habito.concluidoHoje) return
-        set({ habitos: habitos.map(h => h.id === id ? { ...h, concluidoHoje: true, streak: h.streak + 1 } : h) })
-        ganharXP(10)
-        ganharMoedas(2)
-      },
-
-=======
         if (!habito) return
 
         const novoStatus = !habito.concluidoHoje
@@ -356,7 +307,6 @@ export const useAppStore = create(
           ganharMoedas(2)
         }
       },
->>>>>>> ajustes-ui
       // =========================
       // MEDICAMENTOS
       // =========================
@@ -412,15 +362,13 @@ export const useAppStore = create(
       },
 
       // =========================
-<<<<<<< HEAD
-=======
       // HUMOR
       // =========================
       registrosHumor: [],
 
-      registrarHumor: (emoji, valor, nota) => {
+      registrarHumor: (emoji, valor, nota, foco, energia) => {
         nota = nota || ''
-        const { registrosHumor } = get()
+        const { registrosHumor, ganharXP } = get()
         const agora = new Date()
         const hora = agora.getHours()
         const periodo = hora < 12 ? 'manha' : hora < 18 ? 'tarde' : 'noite'
@@ -429,12 +377,16 @@ export const useAppStore = create(
           emoji,
           valor,
           nota,
+          // foco / energia: 1–5 (opcional, novos check-ins de humor)
+          foco: foco || null,
+          energia: energia || null,
           periodo,
           hora: agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
           data: agora.toISOString().split('T')[0],
           timestamp: agora.toISOString(),
         }
         set({ registrosHumor: [novoRegistro, ...registrosHumor] })
+        ganharXP(5)
       },
 
       deletarRegistroHumor: (id) => {
@@ -443,7 +395,6 @@ export const useAppStore = create(
       },
 
       // =========================
->>>>>>> ajustes-ui
       // STREAK / LOGIN
       // =========================
       registrarLoginHoje: () => {
@@ -460,11 +411,7 @@ export const useAppStore = create(
       },
 
       resetarTudo: async () => {
-<<<<<<< HEAD
-        await AsyncStorage.removeItem('sidekick-storage')
-=======
         await AsyncStorage.clear()
->>>>>>> ajustes-ui
       },
 
     }),
