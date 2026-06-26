@@ -7,6 +7,7 @@ import { useThemeColors, useTint, useTheme } from '../../theme/ThemeContext'
 import Icon from '../../components/ui/Icon'
 import GradientView from '../../components/ui/GradientView'
 import { nivelNome, proximoNivelNome } from '../../utils/visuals'
+import { dataLocal } from '../../utils/datas'
 
 const CONQUISTAS = [
   { id: 'c1', icon: 'sprout', titulo: 'Primeira semente', desc: 'Conclua sua primeira tarefa' },
@@ -29,7 +30,7 @@ const HEAT_DARK = ['#1A231E', '#1E5240', '#2E8A66', '#17E375']
 function diaStr(offsetFromToday) {
   const d = new Date()
   d.setDate(d.getDate() - offsetFromToday)
-  return d.toISOString().split('T')[0]
+  return dataLocal(d)
 }
 
 export default function PerfilScreen() {

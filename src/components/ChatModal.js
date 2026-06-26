@@ -6,6 +6,7 @@ import { useState, useRef } from 'react'
 import { useAppStore } from '../store/useAppStore'
 import { colors, spacing, radii, typography } from '../theme'
 import { chatIA } from '../utils/api'
+import { dataLocal } from '../utils/datas'
 
 const COR_PRAZO = { curto: '#7F77DD', medio: '#1D9E75', longo: '#EF9F27' }
 
@@ -45,7 +46,7 @@ export default function ChatModal({ visivel, onFechar }) {
       objetivos: objetivos.map(o => ({ id: o.id, titulo: o.titulo, prazo: o.prazo, tarefas: o.tarefas.length })),
       habitos: habitos.map(h => ({ id: h.id, titulo: h.titulo, streak: h.streak, concluidoHoje: h.concluidoHoje })),
       medicamentos: medicamentos.map(m => ({ id: m.id, nome: m.nome, horarios: m.horarios })),
-      hoje: new Date().toISOString().split('T')[0],
+      hoje: dataLocal(),
     }
   }
 
@@ -80,7 +81,7 @@ export default function ChatModal({ visivel, onFechar }) {
         break
 
       case 'criar_evento':
-        adicionarEvento(dados.data || new Date().toISOString().split('T')[0], {
+        adicionarEvento(dados.data || dataLocal(), {
           titulo: dados.titulo,
           horario: dados.horario || 'Sem horário',
           cor: dados.cor || '#1D9E75',
@@ -96,7 +97,7 @@ export default function ChatModal({ visivel, onFechar }) {
           horarios: dados.horarios || ['08:00'],
           dias: dados.dias || [],
           duracao: dados.duracao || 'continuo',
-          dataInicio: dados.dataInicio || new Date().toISOString().split('T')[0],
+          dataInicio: dados.dataInicio || dataLocal(),
           dataTermino: dados.dataTermino || null,
           quantidade: dados.quantidade || 30,
           avisarReposicao: dados.avisarReposicao ?? true,
