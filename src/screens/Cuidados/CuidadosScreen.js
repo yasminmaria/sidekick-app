@@ -7,6 +7,7 @@ import { useThemeColors, useTint, useTints } from '../../theme/ThemeContext'
 import Icon from '../../components/ui/Icon'
 import GradientView from '../../components/ui/GradientView'
 import { tintForIndex } from '../../utils/visuals'
+import { dataLocal } from '../../utils/datas'
 
 const TIPOS = [
   { valor: 'comprimido', label: '💊 Comprimido' },
@@ -45,7 +46,7 @@ function estadoInicialMed() {
   return {
     nome: '', tipo: 'comprimido', dosagem: '', frequencia: 'diaria',
     dias: ['seg', 'ter', 'qua', 'qui', 'sex'], horarios: ['08:00'],
-    duracao: 'continuo', dataInicio: new Date().toISOString().split('T')[0],
+    duracao: 'continuo', dataInicio: dataLocal(),
     dataTermino: null, quantidade: '30', avisarReposicao: true, quantidadeAviso: '10',
   }
 }
@@ -84,7 +85,7 @@ export default function CuidadosScreen() {
   const habitosFeitos = habitos.filter(h => h.tipo === 'contador' ? h.progresso >= h.meta : h.concluidoHoje).length
   const streakMax = habitos.length ? Math.max(...habitos.map(h => h.streak)) : 0
 
-  const hoje = new Date().toISOString().split('T')[0]
+  const hoje = dataLocal()
   const checkinsHoje = useMemo(() => registrosHumor.filter(r => r.data === hoje), [registrosHumor, hoje])
   const canSave = moodSel !== null && focusSel > 0 && energySel > 0
 

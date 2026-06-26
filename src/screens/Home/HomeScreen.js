@@ -21,6 +21,7 @@ import Icon from '../../components/ui/Icon'
 import GradientView from '../../components/ui/GradientView'
 import TaskTile from '../../components/ui/TaskTile'
 import { iconForTitulo, tintForId, nivelNome } from '../../utils/visuals'
+import { dataLocal } from '../../utils/datas'
 import { pedirPermissaoNotificacoes } from '../../utils/notifications'
 
 const FREQUENCIAS = [
@@ -65,7 +66,7 @@ function estadoInicial() {
 }
 
 function hoje() {
-  return new Date().toISOString().split('T')[0]
+  return dataLocal()
 }
 
 function classificarTarefa(tarefa) {

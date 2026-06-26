@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { persist, createJSONStorage } from 'zustand/middleware'
 import { agendarNotificacaoTarefa, cancelarNotificacao } from '../utils/notifications'
+import { dataLocal } from '../utils/datas'
 
 export const useAppStore = create(
   persist(
@@ -113,13 +114,13 @@ export const useAppStore = create(
       // atualiza o streak por dias consecutivos. Idempotente: só age 1x por data.
       verificarDiaNovo: () => {
         const { perfil, tarefas, habitos, medicamentos } = get()
-        const hoje = new Date().toISOString().split('T')[0]
+        const hoje = dataLocal()
         if (perfil.ultimoReset === hoje) return
 
         // Streak: +1 se o último dia ativo foi ontem; senão recomeça em 1.
         const ontem = new Date()
         ontem.setDate(ontem.getDate() - 1)
-        const ontemStr = ontem.toISOString().split('T')[0]
+        const ontemStr = dataLocal(ontem)
         let streak
         if (!perfil.ultimoReset) streak = Math.max(perfil.streak || 0, 1)
         else streak = perfil.ultimoReset === ontemStr ? (perfil.streak || 0) + 1 : 1
@@ -359,7 +360,7 @@ export const useAppStore = create(
           energia: energia || null,
           periodo,
           hora: agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
-          data: agora.toISOString().split('T')[0],
+          data: dataLocal(agora),
           timestamp: agora.toISOString(),
         }
         set({ registrosHumor: [novoRegistro, ...registrosHumor] })
