@@ -8,6 +8,20 @@ import Icon from '../../components/ui/Icon'
 import ChatModal from '../../components/ChatModal'
 
 const DIAS_CURTO = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S']
+const DIA_KEYS = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab']
+
+// Um medicamento aparece na agenda do dia conforme frequência e período do tratamento.
+function medAtivoNoDia(med, dateStr) {
+  if (med.frequencia === 'quando_necessario') return false
+  if (med.dataInicio && dateStr < med.dataInicio) return false
+  if (med.dataTermino && dateStr > med.dataTermino) return false
+  if (med.frequencia === 'semanal') {
+    const [a, m, d] = dateStr.split('-').map(Number)
+    const wk = DIA_KEYS[new Date(a, m - 1, d).getDay()]
+    return (med.dias || []).includes(wk)
+  }
+  return true // diária (padrão)
+}
 const MESES = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro']
 const DIAS_LONGO = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado']
 
@@ -137,7 +151,7 @@ export default function AgendaScreen() {
   const tint = useTint()
   const styles = useMemo(() => makeStyles(colors), [colors])
   const insets = useSafeAreaInsets()
-  const { eventos, tarefas, adicionarEvento } = useAppStore()
+  const { eventos, tarefas, medicamentos, adicionarEvento, registrarDose } = useAppStore()
 
   const hojeDate = new Date()
   const hojeStr = toDateString(hojeDate)
@@ -154,30 +168,45 @@ export default function AgendaScreen() {
       const d = new Date(start)
       d.setDate(start.getDate() + i)
       const ds = toDateString(d)
-      const temItem = (eventos[ds]?.length || 0) > 0 || tarefas.some(t => t.prazoData === ds && t.prazoHorario)
+      const temItem =
+        (eventos[ds]?.length || 0) > 0 ||
+        tarefas.some(t => t.prazoData === ds && t.prazoHorario) ||
+        medicamentos.some(m => medAtivoNoDia(m, ds) && (m.horarios?.length || 0) > 0)
       return { ds, label: DIAS_CURTO[i], num: d.getDate(), temItem }
     })
-  }, [eventos, tarefas])
+  }, [eventos, tarefas, medicamentos])
 
   const timeline = useMemo(() => {
+    const isToday = dataSelecionada === hojeStr
+
     const evs = (eventos[dataSelecionada] || []).map(e => ({
       id: e.id, titulo: e.titulo, time: normalizeTime(e.horario), min: timeToMinutes(e.horario), done: false, isEvento: true,
     }))
     const tks = tarefas
       .filter(t => t.prazoData === dataSelecionada && t.prazoHorario)
       .map(t => ({ id: t.id, titulo: t.titulo, time: normalizeTime(t.prazoHorario), min: timeToMinutes(t.prazoHorario), done: t.concluida, isEvento: false }))
-    const items = [...evs, ...tks].sort((a, b) => a.min - b.min)
+    const meds = []
+    medicamentos.forEach(med => {
+      if (!medAtivoNoDia(med, dataSelecionada)) return
+      ;(med.horarios || []).forEach(hr => {
+        meds.push({
+          id: `${med.id}-${hr}`, titulo: med.nome, time: normalizeTime(hr), min: timeToMinutes(hr),
+          done: isToday && (med.tomadosHoje || []).includes(hr),
+          isEvento: false, isMed: true, medId: med.id, horario: hr,
+        })
+      })
+    })
+    const items = [...evs, ...tks, ...meds].sort((a, b) => a.min - b.min)
 
-    const isToday = dataSelecionada === hojeStr
     const nowMin = hojeDate.getHours() * 60 + hojeDate.getMinutes()
     let nowMarked = false
     return items.map(it => {
-      const c = classify(it.titulo, it.isEvento)
+      const c = it.isMed ? { tag: 'Remédio', key: 'teal' } : classify(it.titulo, it.isEvento)
       let now = false
       if (isToday && !nowMarked && !it.done && it.min >= nowMin) { now = true; nowMarked = true }
-      return { ...it, ...c }
+      return { ...it, ...c, now }
     })
-  }, [eventos, tarefas, dataSelecionada])
+  }, [eventos, tarefas, medicamentos, dataSelecionada])
 
   const pendentesDoDia = timeline.filter(t => !t.done).length
 
@@ -243,6 +272,18 @@ export default function AgendaScreen() {
               const last = i === timeline.length - 1
               const cardBg = e.now ? colors.surface : (e.done ? colors.surfaceAlt : colors.surface)
               const cardBorder = e.now ? colors.brightGreen : colors.border
+              const isToday = dataSelecionada === hojeStr
+              const pressable = e.isMed && isToday
+              const CardWrap = pressable ? TouchableOpacity : View
+              const wrapProps = pressable
+                ? {
+                    onPress: () => registrarDose(e.medId, e.horario),
+                    activeOpacity: 0.8,
+                    accessibilityRole: 'checkbox',
+                    accessibilityState: { checked: e.done },
+                    accessibilityLabel: `${e.titulo} ${e.time}, ${e.done ? 'tomado' : 'não tomado'}`,
+                  }
+                : {}
               return (
                 <View key={e.id} style={styles.row}>
                   <View style={styles.timeCol}>
@@ -253,7 +294,7 @@ export default function AgendaScreen() {
                     {!last && <View style={styles.rail} />}
                   </View>
                   <View style={styles.cardCol}>
-                    <View style={[styles.card, { backgroundColor: cardBg, borderColor: cardBorder },
+                    <CardWrap {...wrapProps} style={[styles.card, { backgroundColor: cardBg, borderColor: cardBorder },
                       e.now && { shadowColor: colors.primary, shadowOffset: { width: 0, height: 10 }, shadowOpacity: 0.14, shadowRadius: 22, elevation: 4 }]}>
                       <View style={styles.cardTopRow}>
                         <Text style={[styles.cardTitulo, { color: e.done ? colors.textSecondary : colors.textStrong }]} numberOfLines={1}>{e.titulo}</Text>
@@ -261,9 +302,9 @@ export default function AgendaScreen() {
                       </View>
                       <View style={styles.cardMetaRow}>
                         <Text style={[styles.chip, { color: tt.fg, backgroundColor: tt.bg }]}>{e.tag}</Text>
-                        {e.done && <Text style={[styles.doneLabel, { color: tt.fg }]}>✓ Concluído</Text>}
+                        {e.done && <Text style={[styles.doneLabel, { color: tt.fg }]}>✓ {e.isMed ? 'Tomado' : 'Concluído'}</Text>}
                       </View>
-                    </View>
+                    </CardWrap>
                   </View>
                 </View>
               )

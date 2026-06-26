@@ -25,6 +25,7 @@ export const useAppStore = create(
         moedas: 0,
         streak: 0,
         ultimaDataLogin: null,
+        ultimoReset: null,
       },
 
       temaEscuro: false,
@@ -105,6 +106,37 @@ export const useAppStore = create(
       resetarTarefasDiarias: () => {
         const { tarefas } = get()
         set({ tarefas: tarefas.map(t => t.repetitiva && t.frequencia === 'diaria' ? { ...t, concluida: false, recompensada: false } : t) })
+      },
+
+      // Roda na abertura do app (e quando volta do background). Reseta o status
+      // do dia (tarefas diárias, hábitos, doses de remédio) uma vez por dia e
+      // atualiza o streak por dias consecutivos. Idempotente: só age 1x por data.
+      verificarDiaNovo: () => {
+        const { perfil, tarefas, habitos, medicamentos } = get()
+        const hoje = new Date().toISOString().split('T')[0]
+        if (perfil.ultimoReset === hoje) return
+
+        // Streak: +1 se o último dia ativo foi ontem; senão recomeça em 1.
+        const ontem = new Date()
+        ontem.setDate(ontem.getDate() - 1)
+        const ontemStr = ontem.toISOString().split('T')[0]
+        let streak
+        if (!perfil.ultimoReset) streak = Math.max(perfil.streak || 0, 1)
+        else streak = perfil.ultimoReset === ontemStr ? (perfil.streak || 0) + 1 : 1
+
+        set({
+          tarefas: tarefas.map(t =>
+            t.repetitiva && t.frequencia === 'diaria'
+              ? { ...t, concluida: false, recompensada: false }
+              : t
+          ),
+          habitos: habitos.map(h => {
+            const fezOntem = h.tipo === 'contador' ? h.progresso >= h.meta : h.concluidoHoje
+            return { ...h, streak: fezOntem ? h.streak : 0, concluidoHoje: false, progresso: 0 }
+          }),
+          medicamentos: medicamentos.map(m => ({ ...m, tomadosHoje: [] })),
+          perfil: { ...perfil, ultimoReset: hoje, ultimaDataLogin: hoje, streak },
+        })
       },
 
       // =========================

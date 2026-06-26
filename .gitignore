@@ -41,6 +41,4 @@ yarn-error.*
 /android
 /.claude/
 
-# local files
-api.js
 
