@@ -260,7 +260,7 @@ export default function ObjetivosScreen() {
             <View style={styles.modalContainer}>
               <Text style={styles.modalTitulo}>{objetivoEditando ? 'Editar meta' : 'Nova meta'}</Text>
               <Text style={styles.inputLabel}>Título</Text>
-              <TextInput style={styles.input} placeholder="Ex: Aprender a tocar guitarra" placeholderTextColor={colors.textMuted} value={novoObjetivo.titulo} onChangeText={t => setNovoObjetivo({ ...novoObjetivo, titulo: t })} autoFocus />
+              <TextInput style={styles.input} placeholder="Ex: Conquistar um novo objetivo" placeholderTextColor={colors.textMuted} value={novoObjetivo.titulo} onChangeText={t => setNovoObjetivo({ ...novoObjetivo, titulo: t })} autoFocus />
               <Text style={styles.inputLabel}>Prazo</Text>
               <View style={styles.prazoSelector}>
                 {['curto', 'medio', 'longo'].map(p => (

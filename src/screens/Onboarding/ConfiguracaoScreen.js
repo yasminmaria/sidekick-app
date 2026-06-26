@@ -131,7 +131,7 @@ export default function ConfiguracaoScreen({ onConcluir }) {
 
             <TextInput
               style={styles.inputNome}
-              placeholder="Ex: Aprender a programar"
+              placeholder="Ex: Melhorar minha saúde"
               placeholderTextColor={colors.textMuted}
               value={objetivo.titulo}
               onChangeText={t => setObjetivo({ ...objetivo, titulo: t })}

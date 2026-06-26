@@ -18,7 +18,7 @@ export const useAppStore = create(
       // PERFIL
       // =========================
       perfil: {
-        nome: 'Yasmin',
+        nome: '',
         nivel: 1,
         xpAtual: 0,
         xpProximoNivel: 100,
@@ -33,11 +33,7 @@ export const useAppStore = create(
       // =========================
       // TAREFAS
       // =========================
-      tarefas: [
-        { id: '1', titulo: 'Passear com o cachorro', xp: 20, moedas: 5, concluida: false, recompensada: false, repetitiva: true, frequencia: 'diaria', dias: ['seg', 'ter', 'qua', 'qui', 'sex'], prazoData: null, prazoHorario: null, lembrete: false, lembreteMinutos: 30, notificacaoId: null },
-        { id: '2', titulo: 'Tomar remédio', xp: 10, moedas: 2, concluida: false, recompensada: false, repetitiva: true, frequencia: 'diaria', dias: ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab'], prazoData: null, prazoHorario: null, lembrete: false, lembreteMinutos: 30, notificacaoId: null },
-        { id: '3', titulo: 'Estudar React Native', xp: 30, moedas: 10, concluida: false, recompensada: false, repetitiva: false, frequencia: null, dias: [], prazoData: null, prazoHorario: null, lembrete: false, lembreteMinutos: 30, notificacaoId: null },
-      ],
+      tarefas: [],
 
       adicionarTarefa: async (tarefa) => {
         const { tarefas } = get()
@@ -143,14 +139,7 @@ export const useAppStore = create(
       // =========================
       // EVENTOS
       // =========================
-      eventos: {
-        '2026-04-19': [
-          { id: 'e1', titulo: 'Reunião de projeto', horario: '10h00', duracao: '1h', cor: '#1D9E75' },
-        ],
-        '2026-04-20': [
-          { id: 'e2', titulo: 'Consulta neurologista', horario: '14h30', duracao: '1h', cor: '#D4537E' },
-        ],
-      },
+      eventos: {},
 
       adicionarEvento: (data, evento) => {
         const { eventos } = get()
@@ -161,30 +150,7 @@ export const useAppStore = create(
       // =========================
       // OBJETIVOS
       // =========================
-      objetivos: [
-        {
-          id: 'o1',
-          titulo: 'Aprender React Native',
-          prazo: 'curto',
-          cor: '#7F77DD',
-          tarefas: [
-            { id: 'ot1', titulo: 'Criar estrutura de pastas', concluida: true },
-            { id: 'ot2', titulo: 'Instalar dependências', concluida: true },
-            { id: 'ot3', titulo: 'Criar navegação', concluida: false },
-            { id: 'ot4', titulo: 'Construir tela Home', concluida: false },
-          ],
-        },
-        {
-          id: 'o2',
-          titulo: 'Lançar app Sidekick',
-          prazo: 'medio',
-          cor: '#1D9E75',
-          tarefas: [
-            { id: 'ot5', titulo: 'Definir funcionalidades', concluida: true },
-            { id: 'ot6', titulo: 'Criar wireframes', concluida: false },
-          ],
-        },
-      ],
+      objetivos: [],
 
       adicionarObjetivo: (objetivo) => {
         const { objetivos } = get()
@@ -235,11 +201,7 @@ export const useAppStore = create(
       // =========================
       // HÁBITOS
       // =========================
-      habitos: [
-        { id: 'h1', titulo: 'Beber água', emoji: '💧', streak: 3, concluidoHoje: false, tipo: 'contador', meta: 8, unidade: 'copos', progresso: 0 },
-        { id: 'h2', titulo: 'Meditar', emoji: '🧘', streak: 1, concluidoHoje: false, tipo: 'simples', meta: null, unidade: null, progresso: 0 },
-        { id: 'h3', titulo: 'Exercício', emoji: '🏃', streak: 0, concluidoHoje: false, tipo: 'simples', meta: null, unidade: null, progresso: 0 },
-      ],
+      habitos: [],
 
 
 
@@ -310,24 +272,7 @@ export const useAppStore = create(
       // =========================
       // MEDICAMENTOS
       // =========================
-      medicamentos: [
-        {
-          id: 'm1',
-          nome: 'Ritalina',
-          tipo: 'comprimido',
-          dosagem: '10mg',
-          frequencia: 'diaria',
-          dias: ['seg', 'ter', 'qua', 'qui', 'sex'],
-          horarios: ['08:00', '12:00'],
-          duracao: 'continuo',
-          dataInicio: '2026-04-01',
-          dataTermino: null,
-          quantidade: 30,
-          avisarReposicao: true,
-          quantidadeAviso: 10,
-          tomadosHoje: [],
-        },
-      ],
+      medicamentos: [],
 
       adicionarMedicamento: (medicamento) => {
         const { medicamentos } = get()
