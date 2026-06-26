@@ -32,7 +32,7 @@ const TABS = {
 const BAR_H = 64
 const BUBBLE = 52
 // LIFT = transparent zone above bar where the bubble's upper half sits
-const LIFT = Math.ceil(BUBBLE / 3)        // ~18
+const LIFT = Math.ceil(BUBBLE / 2)        // ~18
 // NOTCH_R = bubble radius + gap — the circular cutout is slightly larger than the bubble
 const NOTCH_R = BUBBLE / 2 + 5           // 31
 const VISIBLE_TABS = 5
@@ -103,10 +103,10 @@ function makeStyles(colors) {
       width: BUBBLE,
       height: BUBBLE,
       borderRadius: BUBBLE / 2,
-      backgroundColor: colors.primary,
+      backgroundColor: colors.surface,
       alignItems: 'center',
       justifyContent: 'center',
-      shadowColor: colors.primary,
+      shadowColor: colors.surfaceAlt,
       shadowOffset: { width: 0, height: 6 },
       shadowOpacity: 0.3,
       shadowRadius: 12,
@@ -236,7 +236,7 @@ function CustomTabBar({ state, descriptors, navigation }) {
         style={[styles.bubble, bubbleAnimStyle]}
         pointerEvents="none"
       >
-        {activeTab && <Icon name={activeTab.icon} size={24} color="#fff" strokeWidth={2.2} />}
+        {activeTab && <Icon name={activeTab.icon} size={24} color={colors.brightGreen} strokeWidth={2.2} />}
       </Animated.View>
 
     </View>

@@ -182,7 +182,7 @@ export const goalGradients = {
 }
 
 // Map a goal's stored prazo to one of the gradient styles.
-export const goalColorByPrazo = { curto: 'amber', medio: 'dark', longo: 'teal' }
+export const goalColorByPrazo = { curto: 'amber', medio: 'teal', longo: 'dark' }
 
 export const spacing = {
   xs: 4,
